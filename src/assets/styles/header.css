@@ -1,0 +1,36 @@
+.header {
+    margin-bottom: 3rem;
+}
+
+.ul {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    font-size: 1.6rem;
+    padding: 0
+}
+
+.link {
+    color: var(--blueColor);
+    font-size: 1.8rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+
+.nav {
+    padding: 3rem 0rem;
+    display: flex;
+    justify-content: center;
+}
+.link_signout {
+    color: var(--blackColor);
+    font-weight: 400;
+}
+@media (min-width: 768px) {
+    .ul {
+        justify-content: left;
+    }
+}

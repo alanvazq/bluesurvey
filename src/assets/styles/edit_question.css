@@ -1,0 +1,56 @@
+.container_question {
+  background-color: var(--whiteColor);
+  padding: 3rem;
+  border-radius: 1.5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.question {
+  font-size: 1.6rem;
+  color: var(--blackColor);
+  font-family: var(--font);
+  outline: none;
+  resize: none;
+  border: none;
+  width: 80%;
+}
+
+.container_delete {
+  grid-column: 2 / 3;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+}
+
+.button_delete {
+  background-color: var(--ligthBlueColor);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.input_label {
+  cursor: pointer;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  border-radius: 1.5rem;
+  color: var(--blackColor);
+  margin-bottom: 1rem;
+}
+
+.input_radio:checked + .input_label {
+  background-color: var(--ligthBlueColor);
+  color: var(--blueColor);
+}
+
+.input_label:hover {
+  background-color: var(--ligthBBlueColor);
+  color: var(--blueColor);
+}

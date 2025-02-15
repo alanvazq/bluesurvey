@@ -1,0 +1,70 @@
+.container_button {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon_create {
+  width: 3rem;
+}
+
+.create_button {
+  background-color: var(--blueColor);
+  border: solid 1px var(--blueColor);
+  color: var(--whiteColor);
+  padding: 2rem 3rem;
+  border-radius: 1.5rem;
+  display: flex;
+  transition: all 0.3s ease-out;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.create_button:hover {
+  cursor: pointer;
+  background-color: var(--blueColorB);
+}
+
+.surveys_created {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: var(--grayB);
+  margin-bottom: 3rem;
+}
+
+.container_surveys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+.container_survey {
+  flex-basis: calc(30% - 1rem);
+  font-size: 1.6rem;
+  position: relative;
+  transition: all 0.3s ease-out;
+  background-color: var(--whiteColor);
+  border-radius: .5rem;
+  padding: 2rem;
+
+}
+
+.title_survey_dashboard {
+  margin-bottom: 1rem;
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: var(--blueColor);
+}
+.date_survey {
+  font-weight: 400;
+  color: var(--grayB);
+  margin: 0;
+}
+
+.container_survey:hover {
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
