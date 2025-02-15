@@ -4,28 +4,28 @@ import buttonDelete from "../assets/img/delete.svg";
 import buttonAdd from "../assets/img/create.svg";
 import buttoLink from "../assets/img/link.svg";
 import buttonChart from "../assets/img/chart.svg";
-import { TypeQuestion } from '../components/TypeQuestion'
-
+import { TypeQuestion } from "../components/TypeQuestion";
+import { v4 as uuidv4 } from "uuid";
 
 export const EditSurvey = () => {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState(
-    ""
-  );
+  const [description, setDescription] = useState("");
+  const [questions, setQuestions] = useState([
+    { id: uuidv4(), titleQuestion: "", selectedOption: "Respuesta abierta" },
+  ]);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
-        ref.current.style.height =
-        ref.current.scrollHeight + "px";
+      ref.current.style.height = ref.current.scrollHeight + "px";
     }
   };
 
   useEffect(() => {
     adjustTextArea(titleRef);
-    adjustTextArea(descriptionRef)
+    adjustTextArea(descriptionRef);
   }, [title, description]);
 
   const handleDescriptionChange = (e) => {
@@ -34,6 +34,15 @@ export const EditSurvey = () => {
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
+  };
+
+  const handleAddQuestion = () => {
+    const newQuestion = {
+      id: uuidv4(),
+      titleQuestion: "",
+      selectedOption: "Respuesta abierta",
+    };
+    setQuestions([...questions, newQuestion]);
   };
 
   return (
@@ -61,12 +70,17 @@ export const EditSurvey = () => {
         </div>
 
         <div className="container_questions">
-          <TypeQuestion></TypeQuestion>
+          {questions.map((question) => {
+            return <TypeQuestion key={question.id} id={question.id} />;
+          })}
         </div>
       </div>
 
       <div className="container_actions">
-        <button className="button_action add_button">
+        <button
+          className="button_action add_button"
+          onClick={handleAddQuestion}
+        >
           <img className="img_button" src={buttonAdd} alt="add_question" />
         </button>
         <button className="button_action delete_button">

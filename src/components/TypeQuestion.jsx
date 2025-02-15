@@ -4,8 +4,9 @@ import textImage from "../assets/img/text.svg";
 import radioImage from "../assets/img/radio.svg";
 import boxImage from "../assets/img/box.svg";
 import deleteImage from "../assets/img/delete.svg";
+import { Answer } from "./Answer";
 
-export const TypeQuestion = () => {
+export const TypeQuestion = ({ id }) => {
   const [question, setQuestion] = useState("");
   const [selectedOption, setSelectedOption] = useState("Respuesta abierta");
 
@@ -17,7 +18,7 @@ export const TypeQuestion = () => {
     { label: "Opción múltiple", icon: boxImage },
   ];
 
-  const handleChange = (event) => {
+  const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
@@ -45,6 +46,10 @@ export const TypeQuestion = () => {
           value={question}
           ref={questionRef}
         />
+
+        <div className="container_answer">
+          <Answer typeAnswer={selectedOption} />
+        </div>
       </div>
 
       <div className="container_type_answer">
@@ -53,19 +58,20 @@ export const TypeQuestion = () => {
             <input
               className="input_radio"
               type="radio"
-              id={option.label}
-              name="options"
+              id={`${option.label}-${id}`}
+              name={`options-${id}`}
               value={option.label}
               checked={selectedOption === option.label}
-              onChange={handleChange}
+              onChange={handleOptionChange}
             />
-            <label className="input_label" htmlFor={option.label}>
+            <label className="input_label" htmlFor={`${option.label}-${id}`}>
               <img src={option.icon} alt="icon" className="option_icon" />
               {option.label}
             </label>
           </div>
         ))}
       </div>
+
       <div className="container_delete">
         <button className="button_delete">
           <img src={deleteImage} alt="delete" />

@@ -4,7 +4,8 @@
   border-radius: 1.5rem;
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 3fr 1fr;
+  margin-bottom: 1rem;
 }
 
 .question {
@@ -53,4 +54,46 @@
 .input_label:hover {
   background-color: var(--ligthBBlueColor);
   color: var(--blueColor);
+}
+
+.container_answer {
+  width: 80%;
+}
+
+.answer_text {
+  color: var(--grayB);
+  border-bottom: solid 1px var(--grayB);
+  margin-top: 0;
+  padding-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.container_single_option,
+.container_multiple_option {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input_option {
+  font-family: var(--font);
+  padding: 1rem 1rem 1rem 0;
+  border: none;
+  border-bottom: solid 1px var(--grayB);
+  width: 100%;
+  color: var(--blackColor);
+  font-size: 1.4rem;
+}
+
+.button_add {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: var(--ligthBlueColor);
+  color: var(--blueColor);
+}
+
+.content_single_option, .content_multiple_option {
+  text-align: center;
 }
