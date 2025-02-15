@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import "../assets/styles/edit_question.css";
+import "../assets/styles/question.css";
 import textImage from "../assets/img/text.svg";
 import radioImage from "../assets/img/radio.svg";
 import boxImage from "../assets/img/box.svg";
 import deleteImage from "../assets/img/delete.svg";
 import { Answer } from "./Answer";
 
-export const TypeQuestion = ({ id }) => {
+export const Question = ({ id }) => {
   const [question, setQuestion] = useState("");
   const [selectedOption, setSelectedOption] = useState("Respuesta abierta");
 

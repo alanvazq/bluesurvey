@@ -10,7 +10,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import FormSurvey from './routes/FormSurvey'
 import { AuthProvider } from './auth/AuthProvider'
 import Reports from './routes/Reports'
-import { EditSurvey } from './routes/EditSurvey'
+import { Survey } from './routes/Survey'
 
 const router = createBrowserRouter([
   {
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/dashboard',
-        element: <EditSurvey />
+        element: <Survey />
       },
       {
         path: '/results/:id',

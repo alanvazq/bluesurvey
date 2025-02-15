@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import "../assets/styles/dashboard.css";
 import Header from "../layout/Header";
 import SurveyModal from "../components/SurveyModal";
-import Survey from "../components/Survey";
 import createIcon from "../assets/img/createW.svg";
 import { toast } from "react-hot-toast";
 
@@ -69,21 +68,11 @@ const Dashboard = () => {
               className="container_survey"
               key={survey._id}
             >
-                <div className="icons">
-                </div>
-                <p className="title_survey_dashboard">{survey.title}</p>
-                <p className="date_survey">02/02/2025</p>
+              <div className="icons"></div>
+              <p className="title_survey_dashboard">{survey.title}</p>
+              <p className="date_survey">02/02/2025</p>
             </div>
           ))}
-
-          {selectedSurvey && (
-            <Survey
-              id={selectedSurvey}
-              closeSurvey={setSelectedSurvey}
-              updateSurveys={loadSurveys}
-              n
-            />
-          )}
         </div>
         <SurveyModal
           state={stateModal}

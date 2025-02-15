@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 // import "../assets/styles/survey.css";
 import { useAuth } from "../auth/AuthProvider";
-import Question from "../routes/Question";
 import { Toaster, toast } from "react-hot-toast";
-import "../assets/styles/modal_create_survey.css";
+import "../assets/styles/modal_survey.css";
 
 const Survey = ({ state, changeState, survey, updateSurvey }) => {
   const [title, setTitle] = useState("");

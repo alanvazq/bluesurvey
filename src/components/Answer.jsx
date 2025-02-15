@@ -3,7 +3,6 @@ import circleImg from "../assets/img/circle.svg";
 import squareImg from "../assets/img/square.svg";
 
 export const Answer = ({ typeAnswer }) => {
-    
   const [optionAnswer, setOptionAnswer] = useState([""]);
   const [multipleOptionAnswer, setMultipleOptionAnswer] = useState([""]);
 
@@ -29,6 +28,9 @@ export const Answer = ({ typeAnswer }) => {
     console.log(multipleOptionAnswer);
   };
 
+  useEffect(() => {
+     
+  }, []);
 
   const typeAnswerElement = () => {
     switch (typeAnswer) {

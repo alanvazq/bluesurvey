@@ -4,10 +4,10 @@ import buttonDelete from "../assets/img/delete.svg";
 import buttonAdd from "../assets/img/create.svg";
 import buttoLink from "../assets/img/link.svg";
 import buttonChart from "../assets/img/chart.svg";
-import { TypeQuestion } from "../components/TypeQuestion";
+import { Question } from "../components/Question";
 import { v4 as uuidv4 } from "uuid";
 
-export const EditSurvey = () => {
+export const Survey = () => {
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
 
@@ -19,6 +19,7 @@ export const EditSurvey = () => {
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
+      ref.current.style.height = "auto";
       ref.current.style.height = ref.current.scrollHeight + "px";
     }
   };
@@ -26,6 +27,7 @@ export const EditSurvey = () => {
   useEffect(() => {
     adjustTextArea(titleRef);
     adjustTextArea(descriptionRef);
+    console.log("Hola");
   }, [title, description]);
 
   const handleDescriptionChange = (e) => {
@@ -71,7 +73,7 @@ export const EditSurvey = () => {
 
         <div className="container_questions">
           {questions.map((question) => {
-            return <TypeQuestion key={question.id} id={question.id} />;
+            return <Question key={question.id} id={question.id} />;
           })}
         </div>
       </div>
@@ -93,6 +95,12 @@ export const EditSurvey = () => {
           <img src={buttonChart} alt="chart" />
         </button>
       </div>
+
+      {/* <CopyToClipboard text={`${import.meta.env.VITE_URL_SURVEY}/public-survey/${id}`}>
+                            <button className='button_share' onClick={() => toast.success('Link copiado')}>
+                                <img src={shareIcon} />
+                            </button>
+                        </CopyToClipboard> */}
     </div>
   );
 };
