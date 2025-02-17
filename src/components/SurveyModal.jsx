@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-// import "../assets/styles/survey.css";
 import { useAuth } from "../auth/AuthProvider";
 import { Toaster, toast } from "react-hot-toast";
 import "../assets/styles/modal_survey.css";
+import { useNavigate } from "react-router-dom";
 
 const Survey = ({ state, changeState, survey, updateSurvey }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const auth = useAuth();
+  const goTo = useNavigate();
 
   useEffect(() => {
     setTitle("");
@@ -29,6 +30,7 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
           title,
           description,
         }),
+
       });
 
       if (response.ok) {
@@ -38,6 +40,8 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
         setTitle("");
         setDescription("");
         changeState(false);
+        // goTo("/survey/77777777")
+        console.log(newSurvey);
       } else {
         const errorData = await response.json();
         const messageError = errorData.error;

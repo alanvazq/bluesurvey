@@ -5,11 +5,13 @@ import Header from "../layout/Header";
 import SurveyModal from "../components/SurveyModal";
 import createIcon from "../assets/img/createW.svg";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [stateModal, setStateModal] = useState(false);
   const [surveys, setSurveys] = useState([]);
-  const [selectedSurvey, setSelectedSurvey] = useState(null);
+  const goTo = useNavigate();
+  // const [selectedSurvey, setSelectedSurvey] = useState(null);
 
   const auth = useAuth();
 
@@ -30,8 +32,8 @@ const Dashboard = () => {
 
       if (response.ok) {
         toast.remove();
-        const json = await response.json();
-        setSurveys(json);
+        const surveys = await response.json();
+        setSurveys(surveys);
       } else {
         toast.error("Error en la conexion");
       }
@@ -64,9 +66,9 @@ const Dashboard = () => {
         <div className="container_surveys">
           {surveys.map((survey) => (
             <div
-              onClick={() => setSelectedSurvey(survey._id)}
               className="container_survey"
               key={survey._id}
+              onClick={() => goTo(`/survey/${survey._id}`)}
             >
               <div className="icons"></div>
               <p className="title_survey_dashboard">{survey.title}</p>

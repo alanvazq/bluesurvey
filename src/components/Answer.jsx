@@ -2,41 +2,49 @@ import { useEffect, useState } from "react";
 import circleImg from "../assets/img/circle.svg";
 import squareImg from "../assets/img/square.svg";
 
-export const Answer = ({ typeAnswer }) => {
-  const [optionAnswer, setOptionAnswer] = useState([""]);
-  const [multipleOptionAnswer, setMultipleOptionAnswer] = useState([""]);
+export const Answer = ({ typeAnswer, answers }) => {
+  const [optionAnswer, setOptionAnswer] = useState([]);
+  const [multipleOptionAnswer, setMultipleOptionAnswer] = useState([]);
 
   const handleOptionAnswerChange = (index, event) => {
     const newOptions = [...optionAnswer];
-    newOptions[index] = event.target.value;
+    newOptions[index].answer = event.target.value;
     setOptionAnswer(newOptions);
   };
 
   const handleMultipleOptionChange = (index, event) => {
     const newMultipleOptions = [...multipleOptionAnswer];
-    newMultipleOptions[index] = event.target.value;
+    newMultipleOptions[index].answer = event.target.value;
     setMultipleOptionAnswer(newMultipleOptions);
   };
 
   const addNewOption = () => {
-    setOptionAnswer([...optionAnswer, ""]);
+    setOptionAnswer([...optionAnswer, { answer: "" }]);
     console.log(optionAnswer);
   };
 
   const addNewMultipleOption = () => {
-    setMultipleOptionAnswer([...multipleOptionAnswer, ""]);
+    setMultipleOptionAnswer([...multipleOptionAnswer, { answer: "" }]);
     console.log(multipleOptionAnswer);
   };
 
   useEffect(() => {
-     
+    if (typeAnswer == "singleOption" && answers) {
+      setOptionAnswer(answers);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeAnswer == "multipleOption" && answers) {
+      setMultipleOptionAnswer(answers);
+    }
   }, []);
 
   const typeAnswerElement = () => {
     switch (typeAnswer) {
-      case "Respuesta abierta":
+      case "open":
         return <p className="answer_text">Texto de respuesta</p>;
-      case "Opción única":
+      case "singleOption":
         return (
           <div className="content_single_option">
             {optionAnswer.map((option, index) => {
@@ -51,6 +59,7 @@ export const Answer = ({ typeAnswer }) => {
                     className="input_option"
                     type="text"
                     placeholder="Escribe aquí..."
+                    value={option.answer}
                     onChange={(event) => handleOptionAnswerChange(index, event)}
                   />
                 </div>
@@ -62,7 +71,7 @@ export const Answer = ({ typeAnswer }) => {
           </div>
         );
 
-      case "Opción múltiple":
+      case "multipleOption":
         return (
           <div className="content_multiple_option">
             {multipleOptionAnswer.map((option, index) => {

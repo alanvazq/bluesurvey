@@ -6,19 +6,20 @@ import boxImage from "../assets/img/box.svg";
 import deleteImage from "../assets/img/delete.svg";
 import { Answer } from "./Answer";
 
-export const Question = ({ id }) => {
-  const [question, setQuestion] = useState("");
-  const [selectedOption, setSelectedOption] = useState("Respuesta abierta");
+export const Question = ({ id, typeQuestion, question_survey, answers}) => {
+  const [selectedOption, setSelectedOption] = useState(typeQuestion);
+  const [question, setQuestion] = useState(question_survey);
 
   const questionRef = useRef(null);
 
   const options = [
-    { label: "Respuesta abierta", icon: textImage },
-    { label: "Opción única", icon: radioImage },
-    { label: "Opción múltiple", icon: boxImage },
+    { type: "open", label: "Respuesta abierta", icon: textImage },
+    { type: "singleOption", label: "Opción única", icon: radioImage },
+    { type: "multipleOption", label: "Opción múltiple", icon: boxImage },
   ];
 
   const handleOptionChange = (event) => {
+    console.log(event.target.value)
     setSelectedOption(event.target.value);
   };
 
@@ -48,7 +49,7 @@ export const Question = ({ id }) => {
         />
 
         <div className="container_answer">
-          <Answer typeAnswer={selectedOption} />
+          <Answer typeAnswer={selectedOption} answers={answers} />
         </div>
       </div>
 
@@ -58,13 +59,13 @@ export const Question = ({ id }) => {
             <input
               className="input_radio"
               type="radio"
-              id={`${option.label}-${id}`}
+              id={`${option.type}-${id}`}
               name={`options-${id}`}
-              value={option.label}
-              checked={selectedOption === option.label}
+              value={option.type}
+              checked={selectedOption === option.type}
               onChange={handleOptionChange}
             />
-            <label className="input_label" htmlFor={`${option.label}-${id}`}>
+            <label className="input_label" htmlFor={`${option.type}-${id}`}>
               <img src={option.icon} alt="icon" className="option_icon" />
               {option.label}
             </label>

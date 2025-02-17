@@ -41,7 +41,7 @@
   margin-bottom: 4rem;
 }
 .container_survey {
-  flex-basis: calc(30% - 1rem);
+  flex-basis: calc(25% - 1rem);
   font-size: 1.6rem;
   position: relative;
   transition: all 0.3s ease-out;
@@ -54,13 +54,14 @@
 .title_survey_dashboard {
   margin-bottom: 1rem;
   margin-top: 0;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: var(--blueColor);
 }
 .date_survey {
   font-weight: 400;
   color: var(--grayB);
   margin: 0;
+  font-size: 1.4rem;
 }
 
 .container_survey:hover {

@@ -21,9 +21,11 @@
 
 
 .nav {
-    padding: 3rem 0rem;
+    padding: 3rem 3rem;
     display: flex;
-    justify-content: center;
+    background-color: var(--whiteColor);
+    border-radius: 2.5rem;
+    margin-top: 1rem;
 }
 .link_signout {
     color: var(--blackColor);

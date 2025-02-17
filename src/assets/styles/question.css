@@ -91,12 +91,16 @@
 }
 
 .button_add {
-  padding: 0.5rem 1rem;
+  padding: 1rem 2rem;
   border-radius: 1rem;
   border: none;
-  background-color: var(--ligthBlueColor);
-  color: var(--blueColor);
+  background-color: var(--blueColor);
+  color: var(--whiteColor);
+  font-family: var(--font);
+  cursor: pointer;
 }
+
+
 
 .content_single_option,
 .content_multiple_option {
