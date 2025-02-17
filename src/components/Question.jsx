@@ -6,7 +6,7 @@ import boxImage from "../assets/img/box.svg";
 import deleteImage from "../assets/img/delete.svg";
 import { Answer } from "./Answer";
 
-export const Question = ({ id, typeQuestion, question_survey, answers}) => {
+export const Question = ({ id, typeQuestion, question_survey, answers }) => {
   const [selectedOption, setSelectedOption] = useState(typeQuestion);
   const [question, setQuestion] = useState(question_survey);
 
@@ -19,7 +19,6 @@ export const Question = ({ id, typeQuestion, question_survey, answers}) => {
   ];
 
   const handleOptionChange = (event) => {
-    console.log(event.target.value)
     setSelectedOption(event.target.value);
   };
 

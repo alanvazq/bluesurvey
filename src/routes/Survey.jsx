@@ -19,6 +19,7 @@ export const Survey = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [survey, setSurvey] = useState({});
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -46,10 +47,14 @@ export const Survey = () => {
 
   const handleAddQuestion = () => {
     const newQuestion = {
-      id: uuidv4(),
-      titleQuestion: "",
-      selectedOption: "Respuesta abierta",
+      _id: uuidv4(),
+      idUser: survey.idUser,
+      idSurvey: survey.idSurvey,
+      typeQuestion: "open",
+      question: "",
+      answers: [],
     };
+
     setQuestions([...questions, newQuestion]);
   };
 
@@ -67,9 +72,23 @@ export const Survey = () => {
 
     if (response.ok) {
       const survey = await response.json();
+      setSurvey(survey);
       setTitle(survey.title);
       setDescription(survey.description);
-      setQuestions(survey.questions);
+      if (survey.questions.length === 0) {
+        setQuestions([
+          {
+            _id: uuidv4(),
+            idUser: survey.idUser,
+            idSurvey: survey.idSurvey,
+            typeQuestion: "open",
+            question: "",
+            answers: [],
+          },
+        ]);
+      } else {
+        setQuestions(survey.questions);
+      }
     }
   };
 

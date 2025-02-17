@@ -72,8 +72,7 @@
   font-size: 1.4rem;
 }
 
-.container_single_option,
-.container_multiple_option {
+.container_option {
   width: 100%;
   display: flex;
   gap: 1rem;
@@ -100,9 +99,6 @@
   cursor: pointer;
 }
 
-
-
-.content_single_option,
-.content_multiple_option {
+.content_options {
   text-align: center;
 }
