@@ -52,25 +52,42 @@
 
 .delete_button,
 .link_button,
-.chart_button {
+.chart_button,
+.save_button {
   background-color: var(--ligthBlueColor);
 }
 
 .add_button::after {
-    content: "Agregar pregunta";
-    position: absolute;
-    left: 220%;
-    transform: translateX(-50%);
-    background-color: var(--whiteColor);
-    color: var(--blackColor);
-    padding: 5px 8px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s;
-  }
+  content: "Agregar pregunta";
+  position: absolute;
+  left: 220%;
+  transform: translateX(-50%);
+  background-color: var(--whiteColor);
+  color: var(--blackColor);
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+
+.save_button::after {
+  content: "Guardar cambios";
+  position: absolute;
+  left: 220%;
+  transform: translateX(-50%);
+  background-color: var(--whiteColor);
+  color: var(--blackColor);
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
 
 .delete_button::after {
   content: "Eliminar encuesta";
@@ -89,50 +106,50 @@
 }
 
 .link_button::after {
-    content: "Copiar link de encuesta";
-    position: absolute;
-    left: 250%;
-    transform: translateX(-50%);
-    background-color: var(--whiteColor);
-    color: var(--blackColor);
-    padding: 5px 8px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s;
+  content: "Copiar link de encuesta";
+  position: absolute;
+  left: 250%;
+  transform: translateX(-50%);
+  background-color: var(--whiteColor);
+  color: var(--blackColor);
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
 }
 
 .chart_button::after {
-    content: "Ver respuestas";
-    position: absolute;
-    left: 220%;
-    transform: translateX(-50%);
-    background-color: var(--whiteColor);
-    color: var(--blackColor);
-    padding: 5px 8px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s;
+  content: "Ver respuestas";
+  position: absolute;
+  left: 220%;
+  transform: translateX(-50%);
+  background-color: var(--whiteColor);
+  color: var(--blackColor);
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
 }
 
 .container_edit_survey {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    gap: 10rem;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  gap: 10rem;
 }
 
 .container_edit {
-    flex: 7;
+  flex: 7;
 }
 
 .container_actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

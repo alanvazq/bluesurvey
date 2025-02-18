@@ -4,17 +4,25 @@ import buttonDelete from "../assets/img/delete.svg";
 import buttonAdd from "../assets/img/create.svg";
 import buttoLink from "../assets/img/link.svg";
 import buttonChart from "../assets/img/chart.svg";
+import buttonSave from "../assets/img/save.svg";
 import { Question } from "../components/Question";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../layout/Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import {
+  getSurveyData,
+  deleteSurveyById,
+  updateTitleOrDescription,
+} from "../services/surveyService";
 
 export const Survey = () => {
   const { id } = useParams();
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const auth = useAuth();
+  const accessToken = auth.getAccessToken();
+  const goTo = useNavigate();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -34,7 +42,7 @@ export const Survey = () => {
   }, [title, description]);
 
   useEffect(() => {
-    getSurveyData();
+    getSurvey();
   }, []);
 
   const handleDescriptionChange = (e) => {
@@ -58,20 +66,19 @@ export const Survey = () => {
     setQuestions([...questions, newQuestion]);
   };
 
-  const getSurveyData = async () => {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/surveys/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.getAccessToken()}`,
-        },
-      }
-    );
+  const handleSaveChanges = () => {
+    let updatedData = {};
+    let titleOrDescriptionChanged = false;
+    let questionsChanged = false;
 
-    if (response.ok) {
-      const survey = await response.json();
+    if (title !== survey.title || description !== survey.description) {
+      updateTitleAndDescription();
+    }
+  };
+
+  const getSurvey = async () => {
+    try {
+      const survey = await getSurveyData(id, accessToken);
       setSurvey(survey);
       setTitle(survey.title);
       setDescription(survey.description);
@@ -89,7 +96,39 @@ export const Survey = () => {
       } else {
         setQuestions(survey.questions);
       }
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  const deleteSurvey = async () => {
+    try {
+      const surveyDeleted = await deleteSurveyById(id, accessToken);
+      if (surveyDeleted) {
+        console.log("Encuesta eliminada");
+        goTo("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateTitleAndDescription = async () => {
+    try {
+      const surveyUpdated = await updateTitleOrDescription(
+        id,
+        title,
+        description,
+        accessToken
+      );
+      if (surveyUpdated) {
+        console.log("Encuesta actualizada");
+        setTitle(surveyUpdated.title),
+          setDescription(surveyUpdated.description);
+      } else {
+        console.log("Errror al actualizar la encuesta");
+      }
+    } catch (error) {}
   };
 
   return (
@@ -140,7 +179,13 @@ export const Survey = () => {
           >
             <img className="img_button" src={buttonAdd} alt="add_question" />
           </button>
-          <button className="button_action delete_button">
+          <button className="button_action save_button" onClick={handleSaveChanges}>
+            <img className="img_button" src={buttonSave} alt="save_survey" />
+          </button>
+          <button
+            className="button_action delete_button"
+            onClick={deleteSurvey}
+          >
             <img src={buttonDelete} alt="delete" />
           </button>
           <button className="button_action link_button">

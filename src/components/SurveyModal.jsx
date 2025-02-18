@@ -40,8 +40,6 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
         setTitle("");
         setDescription("");
         changeState(false);
-        // goTo("/survey/77777777")
-        console.log(newSurvey);
       } else {
         const errorData = await response.json();
         const messageError = errorData.error;
