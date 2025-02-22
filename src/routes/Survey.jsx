@@ -5,15 +5,18 @@ import buttonAdd from "../assets/img/create.svg";
 import buttoLink from "../assets/img/link.svg";
 import buttonChart from "../assets/img/chart.svg";
 import buttonSave from "../assets/img/save.svg";
+import noChanges from "../assets/img/changes.svg";
 import { Question } from "../components/Question";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../layout/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+
 import {
   getSurveyData,
   deleteSurveyById,
   updateTitleOrDescription,
+  deleteQuestionById,
 } from "../services/surveyService";
 
 export const Survey = () => {
@@ -28,6 +31,9 @@ export const Survey = () => {
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
   const [survey, setSurvey] = useState({});
+
+  const [changeInTitleOrDescription, setChangeInTittleOrDescription] = useState(false);
+  const [changeInQuestions, setChangeInQuestions] = useState(false);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -55,7 +61,7 @@ export const Survey = () => {
 
   const handleAddQuestion = () => {
     const newQuestion = {
-      _id: uuidv4(),
+      _id: `n-${uuidv4()}`,
       idUser: survey.idUser,
       idSurvey: survey.idSurvey,
       typeQuestion: "open",
@@ -64,16 +70,6 @@ export const Survey = () => {
     };
 
     setQuestions([...questions, newQuestion]);
-  };
-
-  const handleSaveChanges = () => {
-    let updatedData = {};
-    let titleOrDescriptionChanged = false;
-    let questionsChanged = false;
-
-    if (title !== survey.title || description !== survey.description) {
-      updateTitleAndDescription();
-    }
   };
 
   const getSurvey = async () => {
@@ -85,7 +81,7 @@ export const Survey = () => {
       if (survey.questions.length === 0) {
         setQuestions([
           {
-            _id: uuidv4(),
+            _id: `n-${uuidv4()}`,
             idUser: survey.idUser,
             idSurvey: survey.idSurvey,
             typeQuestion: "open",
@@ -95,18 +91,6 @@ export const Survey = () => {
         ]);
       } else {
         setQuestions(survey.questions);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteSurvey = async () => {
-    try {
-      const surveyDeleted = await deleteSurveyById(id, accessToken);
-      if (surveyDeleted) {
-        console.log("Encuesta eliminada");
-        goTo("/dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -130,6 +114,63 @@ export const Survey = () => {
       }
     } catch (error) {}
   };
+
+  const updateQuestion = async (question) => {
+    // aqui se envia la pregunta
+  };
+
+  const deleteSurvey = async () => {
+    try {
+      const surveyDeleted = await deleteSurveyById(id, accessToken);
+      if (surveyDeleted) {
+        console.log("Encuesta eliminada");
+        goTo("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSaveChanges = () => {
+    if (changeInTitleOrDescription) {
+      updateTitleAndDescription();
+    } else if (changeInQuestions) {
+      updateQuestion();
+    }
+  };
+
+  const removeQuestion = (questionId) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((question) => question._id !== questionId)
+    );
+  };
+
+  const deleteQuestion = async (questionId) => {
+    if (questionId.startsWith("n-")) {
+      removeQuestion(questionId);
+      return;
+    }
+    try {
+      const deletedQuestion = await deleteQuestionById(
+        questionId,
+        id,
+        accessToken
+      );
+      if (deletedQuestion) {
+        removeQuestion(questionId);
+      }
+    } catch (error) {
+      console.log("Error al borrar la pregunta");
+    }
+  };
+
+  useEffect(() => {
+    if (title !== survey.title || description !== survey.description) {
+      setChangeInTittleOrDescription(true);
+    } else {
+      setChangeInTittleOrDescription(false);
+    }
+  }, [title, description]);
 
   return (
     <>
@@ -166,6 +207,8 @@ export const Survey = () => {
                   typeQuestion={question.typeQuestion}
                   question_survey={question.question}
                   answers={question.answers}
+                  deleteQuestion={deleteQuestion}
+                  changeInQuestions={setChangeInQuestions}
                 />
               );
             })}
@@ -179,8 +222,23 @@ export const Survey = () => {
           >
             <img className="img_button" src={buttonAdd} alt="add_question" />
           </button>
-          <button className="button_action save_button" onClick={handleSaveChanges}>
-            <img className="img_button" src={buttonSave} alt="save_survey" />
+          <button
+            className={`button_action  ${
+              changeInTitleOrDescription || changeInQuestions
+                ? "save_button"
+                : "no_changes"
+            } `}
+            onClick={handleSaveChanges}
+          >
+            <img
+              className="img_button"
+              src={
+                changeInTitleOrDescription || changeInQuestions
+                  ? buttonSave
+                  : noChanges
+              }
+              alt="save_survey"
+            />
           </button>
           <button
             className="button_action delete_button"

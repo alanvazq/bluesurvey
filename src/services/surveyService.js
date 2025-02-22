@@ -47,7 +47,6 @@ export const deleteSurveyById = async (id, accessToken) => {
     }
 };
 
-
 export const updateTitleOrDescription = async (id, title, description, accessToken) => {
 
     try {
@@ -73,5 +72,29 @@ export const updateTitleOrDescription = async (id, title, description, accessTok
     } catch (error) {
         console.log(error);
     }
+}
 
+// export const updateQuest = async(id, question)
+
+export const deleteQuestionById = async (questionId, surveyId, accessToken) => {
+    try {
+        const response = await fetch(`${API_URL}/surveys/${surveyId}/questions/${questionId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+
+        });
+
+        if (response.ok) {
+            const surveyUpdated = await response.json();
+            return surveyUpdated;
+        } else {
+            console.log("Error al actualizar la encuesta")
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
 }

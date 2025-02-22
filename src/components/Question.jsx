@@ -6,9 +6,18 @@ import boxImage from "../assets/img/box.svg";
 import deleteImage from "../assets/img/delete.svg";
 import { Answer } from "./Answer";
 
-export const Question = ({ id, typeQuestion, question_survey, answers }) => {
+export const Question = ({
+  id,
+  typeQuestion,
+  question_survey,
+  answers,
+  deleteQuestion,
+  changeInQuestions,
+}) => {
   const [selectedOption, setSelectedOption] = useState(typeQuestion);
   const [question, setQuestion] = useState(question_survey);
+  const [initialQuestionState, setInitialQuestionState] = useState(question_survey);
+  const [initialTypeState, setInitialTypeState] = useState(typeQuestion);
 
   const questionRef = useRef(null);
 
@@ -32,9 +41,33 @@ export const Question = ({ id, typeQuestion, question_survey, answers }) => {
     }
   };
 
+  const verifyQuestionChange = () => {
+    if (question !== initialQuestionState) {
+      changeInQuestions(true);
+    } else {
+      changeInQuestions(false);
+    }
+  };
+
+  const verifyTypeChange = () => {
+    if (selectedOption !== initialTypeState) {
+      changeInQuestions(true);
+    } else {
+      changeInQuestions(false);
+    }
+  };
+
   useEffect(() => {
     adjustTextArea(questionRef);
   }, [question]);
+
+  useEffect(() => {
+    verifyQuestionChange();
+  }, [question]);
+
+  useEffect(() => {
+    verifyTypeChange();
+  }, [selectedOption]);
 
   return (
     <div className="container_question">
@@ -48,7 +81,11 @@ export const Question = ({ id, typeQuestion, question_survey, answers }) => {
         />
 
         <div className="container_answer">
-          <Answer typeAnswer={selectedOption} answers={answers} />
+          <Answer
+            typeAnswer={selectedOption}
+            answers={answers}
+            changeInQuestions={changeInQuestions}
+          />
         </div>
       </div>
 
@@ -73,7 +110,7 @@ export const Question = ({ id, typeQuestion, question_survey, answers }) => {
       </div>
 
       <div className="container_delete">
-        <button className="button_delete">
+        <button className="button_delete" onClick={() => deleteQuestion(id)}>
           <img src={deleteImage} alt="delete" />
         </button>
       </div>
