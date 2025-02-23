@@ -27,13 +27,15 @@ export const Survey = () => {
   const accessToken = auth.getAccessToken();
   const goTo = useNavigate();
 
+  const [survey, setSurvey] = useState({});
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [survey, setSurvey] = useState({});
 
-  const [changeInTitleOrDescription, setChangeInTittleOrDescription] = useState(false);
-  const [changeInQuestions, setChangeInQuestions] = useState(false);
+  const [changeInTitleOrDescription, setChangeInTitleOrDescription] = useState(false);
+
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -51,6 +53,9 @@ export const Survey = () => {
     getSurvey();
   }, []);
 
+  const handleEditMode = (id) => {
+    setEditingQuestionId(id);
+  };
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
@@ -106,17 +111,16 @@ export const Survey = () => {
         accessToken
       );
       if (surveyUpdated) {
-        console.log("Encuesta actualizada");
+        setSurvey(surveyUpdated);
         setTitle(surveyUpdated.title),
           setDescription(surveyUpdated.description);
+        setChangeInTitleOrDescription(false);
       } else {
         console.log("Errror al actualizar la encuesta");
       }
-    } catch (error) {}
-  };
-
-  const updateQuestion = async (question) => {
-    // aqui se envia la pregunta
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deleteSurvey = async () => {
@@ -134,8 +138,6 @@ export const Survey = () => {
   const handleSaveChanges = () => {
     if (changeInTitleOrDescription) {
       updateTitleAndDescription();
-    } else if (changeInQuestions) {
-      updateQuestion();
     }
   };
 
@@ -166,9 +168,9 @@ export const Survey = () => {
 
   useEffect(() => {
     if (title !== survey.title || description !== survey.description) {
-      setChangeInTittleOrDescription(true);
+      setChangeInTitleOrDescription(true);
     } else {
-      setChangeInTittleOrDescription(false);
+      setChangeInTitleOrDescription(false);
     }
   }, [title, description]);
 
@@ -205,10 +207,11 @@ export const Survey = () => {
                   key={question._id}
                   id={question._id}
                   typeQuestion={question.typeQuestion}
-                  question_survey={question.question}
+                  questionSurvey={question.question}
                   answers={question.answers}
                   deleteQuestion={deleteQuestion}
-                  changeInQuestions={setChangeInQuestions}
+                  onEdit={handleEditMode}
+                  isEditing={editingQuestionId === question._id}
                 />
               );
             })}
@@ -223,20 +226,14 @@ export const Survey = () => {
             <img className="img_button" src={buttonAdd} alt="add_question" />
           </button>
           <button
-            className={`button_action  ${
-              changeInTitleOrDescription || changeInQuestions
-                ? "save_button"
-                : "no_changes"
+            className={`button_action ${
+              changeInTitleOrDescription ? "save_button" : "no_changes"
             } `}
             onClick={handleSaveChanges}
           >
             <img
               className="img_button"
-              src={
-                changeInTitleOrDescription || changeInQuestions
-                  ? buttonSave
-                  : noChanges
-              }
+              src={changeInTitleOrDescription ? buttonSave : noChanges}
               alt="save_survey"
             />
           </button>

@@ -30,7 +30,6 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
           title,
           description,
         }),
-
       });
 
       if (response.ok) {

@@ -6,39 +6,72 @@
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 3fr 1fr;
   margin-bottom: 1rem;
+  transition: all 0.2s ease-out;
+}
+.container_question:hover {
+  box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.1);
 }
 
-.question {
-  font-size: 1.6rem;
-  color: var(--blackColor);
+.question_no_edit {
+  cursor: pointer;
+}
+
+.question_edit {
+  cursor: auto;
+}
+
+.title_question {
   font-family: var(--font);
+  font-size: 1.6rem;
   outline: none;
   resize: none;
   border: none;
   width: 80%;
 }
 
-.container_delete {
-  grid-column: 2 / 3;
-  display: flex;
-  justify-content: end;
-  align-items: end;
+.question_preview {
+  color: var(--grayB);
+  font-weight: 500;
+}
+.question {
+  color: var(--blueColor);
 }
 
-.button_delete {
-  background-color: var(--ligthBlueColor);
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
+.button_delete,
+.button_save_question,
+.cancel_question {
   border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  color: var(--blueColor);
+  background-color: var(--ligthBBlueColor);
+  font-family: var(--font);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
 }
+
+.button_save_question {
+  background-color: var(--blueColor);
+  color: var(--whiteColor);
+}
+
+.button_save_question:hover {
+  background-color: var(--blueColorB);
+}
+
+.cancel_question {
+  background-color: var(--lightGray);
+  color: var(--blackColor);
+}
+
+.cancel_question:hover {
+  background-color: var(--gray);
+}
+
 .button_delete:hover {
   border: none;
-  cursor: pointer;
+  background-color: var(--ligthBlueColor);
 }
 .input_label {
   cursor: pointer;
@@ -48,6 +81,7 @@
   border-radius: 1.5rem;
   color: var(--blackColor);
   margin-bottom: 1rem;
+  font-size: 1.4rem;
 }
 
 .input_radio:checked + .input_label {
@@ -66,9 +100,9 @@
 
 .answer_text {
   color: var(--grayB);
-  border-bottom: solid 1px var(--grayB);
+  border-bottom: solid 1px var(--gray);
+  padding: 0 0 1rem 0;
   margin-top: 0;
-  padding-bottom: 1rem;
   font-size: 1.4rem;
 }
 
@@ -78,33 +112,44 @@
   gap: 1rem;
   margin-bottom: 1rem;
   align-items: center;
-  
 }
 
 .input_option {
   font-family: var(--font);
-  padding: 1rem 1rem 1rem 0;
+  padding: 0.5rem 0.5rem 0.5rem 0;
   border: none;
-  border-bottom: solid 1px var(--grayB);
   width: 100%;
   color: var(--blackColor);
   font-size: 1.4rem;
 }
 
+.input_preview {
+  color: var(--grayB);
+  font-weight: 400;
+}
+
+.input_answer {
+  border-bottom: solid 1px var(--gray);
+}
+
 .button_add {
-  padding: 1rem 2rem;
-  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
   border: none;
-  background-color: var(--blueColor);
-  color: var(--whiteColor);
+  background-color: var(--ligthBBlueColor);
+  color: var(--blueColor);
   font-family: var(--font);
+  transition: all 0.2s ease-out;
   cursor: pointer;
+}
+
+.button_add:hover {
+  background-color: var(--ligthBlueColor);
 }
 
 .content_options {
   text-align: center;
 }
-
 
 .option_delete {
   align-self: flex-end;
@@ -114,7 +159,18 @@
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  background-color:transparent;
+  background-color: transparent;
   border: none;
   border-radius: 50%;
+}
+
+.img_option {
+  width: 1.8rem;
+}
+
+.container_savequestion {
+  align-self: flex-end;
+  justify-self: end;
+  display: flex;
+  gap: 1rem;
 }

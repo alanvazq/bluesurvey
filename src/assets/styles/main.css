@@ -1,62 +1,61 @@
 :root {
-    --font: 'Poppins', sans-serif;
-    --backgroundColor: #F5F5F5;
-    --blueColor: #1C74B4;
-    --ligthBlueColor: #D0EBFF;
-    --ligthBBlueColor: #eff8ff;
-    --whiteColor: #FFFFFF;
-    --greenColor: #25B7B5;
-    --blueColorB: #1757A3;
-    --lightGray: #EAEBED;
-    --gray: #cacaca;
-    --grayB: #9c9c9c;
-    --blackColor: #303030;
-    --redColor: #E65C4F;
+  --font: "Poppins", sans-serif;
+  --backgroundColor: #f5f5f5;
+  --blueColor: #1c74b4;
+  --ligthBlueColor: #d0ebff;
+  --ligthBBlueColor: #eff8ff;
+  --whiteColor: #ffffff;
+  --greenColor: #25b7b5;
+  --blueColorB: #1757a3;
+  --lightGray: #eaebed;
+  --gray: #cacaca;
+  --grayB: #767676;
+  --blackColor: #303030;
+  --redColor: #e65c4f;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-    font-size: 62.5%;
+  font-size: 62.5%;
 }
 
 body {
-    margin: 0;
-    font-family: var(--font);
-    background-color: var(--backgroundColor);
-    color: var(--blackColor);
-    position: relative;
-    font-size: 1.6rem;
+  margin: 0;
+  font-family: var(--font);
+  background-color: var(--backgroundColor);
+  color: var(--blackColor);
+  position: relative;
+  font-size: 1.6rem;
 }
 
-
 h1 {
-    font-size: 5rem;
-    margin: 0;
+  font-size: 5rem;
+  margin: 0;
 }
 
 h2 {
-    font-size: 3rem;
-    font-weight: 500;
-    margin: 0;
+  font-size: 3rem;
+  font-weight: 500;
+  margin: 0;
 }
 
 h3 {
-    font-size: 1.8rem;
-    font-weight: 400;
-    margin: 0;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+
 }
 
 p {
-    font-size: 1.6rem;
+  font-size: 1.6rem;
 }
 
-
 .container {
-    max-width: 100rem;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+  max-width: 100rem;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
