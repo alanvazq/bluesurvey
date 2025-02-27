@@ -6,15 +6,20 @@ import boxImage from "../assets/img/box.svg";
 import { Answer } from "./Answer";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
+import { updateQuestionById } from "../services/surveyService";
 
 export const Question = ({
+  surveyId,
   id,
+  accessToken,
   typeQuestion,
   questionSurvey,
   answers,
   deleteQuestion,
   onEdit,
   isEditing,
+  setChangeInQue,
+  cancelEditMode,
 }) => {
   const [titleQuestion, setTitleQuestion] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -24,6 +29,8 @@ export const Question = ({
   const [initialOption, setInitialOption] = useState("");
   const [initialAnswers, setIntialAnswers] = useState([]);
 
+  const [changeInQuestion, setChangeInQuestion] = useState(false);
+
   const questionRef = useRef(null);
 
   const options = [
@@ -32,8 +39,45 @@ export const Question = ({
     { type: "multipleOption", label: "Opción múltiple", icon: boxImage },
   ];
 
-  const handleChangeEditMode = () => {
+  const updateQuestion = async () => {
+    try {
+      const updatedSurvey = await updateQuestionById(
+        surveyId,
+        id,
+        answersQuestion,
+        titleQuestion,
+        selectedOption,
+        accessToken
+      );
+
+      if (updatedSurvey) {
+        const question = updatedSurvey.questions.find(
+          (quest) => quest._id === id
+        );
+        setInitialTitle(_.cloneDeep(question.question));
+        setInitialOption(_.cloneDeep(question.typeQuestion));
+        setIntialAnswers(_.cloneDeep(question.answers));
+        setSelectedOption(question.typeQuestion);
+        setTitleQuestion(question.question);
+        setAnswersQuestion(question.answers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangeEditMode = (e) => {
+    e.stopPropagation();
+    if (isEditing) return;
     onEdit(id);
+  };
+
+  const handleCancelEditMode = (e) => {
+    e.stopPropagation();
+    setTitleQuestion(initialTitle);
+    setSelectedOption(initialOption);
+    setAnswersQuestion(_.cloneDeep(initialAnswers));
+    cancelEditMode();
   };
 
   const handleTitleChange = (event) => {
@@ -51,6 +95,8 @@ export const Question = ({
   };
 
   const addNewAnswer = () => {
+    const newQues = answersQuestion.find((ques) => ques.answer === "");
+    if (newQues) return;
     setAnswersQuestion([
       ...answersQuestion,
       { answer: "", _id: `n-${uuidv4()}` },
@@ -78,15 +124,28 @@ export const Question = ({
   };
 
   const changeInAnswrs = () => {
+    const lastAnswer = answersQuestion.at(-1);
+    if (lastAnswer !== undefined) {
+      if (lastAnswer.answer === "") {
+        return false;
+      }
+    }
     return !_.isEqual(answersQuestion, initialAnswers);
   };
+
   useEffect(() => {
     if (changesInTitleQuestion()) {
-      console.log("Cambio el titulo");
+      setChangeInQuestion(true);
+      setChangeInQue(true);
     } else if (changesInOption()) {
-      console.log("Cambio el tipo de pregunta");
+      setChangeInQuestion(true);
+      setChangeInQue(true);
     } else if (changeInAnswrs()) {
-      console.log("Cambios en respuestas");
+      setChangeInQuestion(true);
+      setChangeInQue(true);
+    } else {
+      setChangeInQuestion(false);
+      setChangeInQue(false);
     }
   }, [titleQuestion, selectedOption, answersQuestion]);
 
@@ -100,7 +159,9 @@ export const Question = ({
   }, []);
 
   useEffect(() => {
-    if (
+    if (selectedOption === "open") {
+      setAnswersQuestion([]);
+    } else if (
       (selectedOption === "singleOption" ||
         selectedOption === "multipleOption") &&
       answersQuestion.length === 0
@@ -112,6 +173,7 @@ export const Question = ({
   useEffect(() => {
     adjustTextArea(questionRef);
   }, [titleQuestion]);
+
   return (
     <div
       className={`container_question ${
@@ -164,7 +226,17 @@ export const Question = ({
 
       {isEditing && (
         <div className="container_savequestion">
-          <button className="button_save_question">Guardar</button>
+          <button
+            onClick={updateQuestion}
+            className={`button_save_question ${
+              changeInQuestion ? "save_changes_question" : "no_changes_question"
+            }`}
+          >
+            Guardar
+          </button>
+          <button className="cancel_question" onClick={handleCancelEditMode}>
+            Cancelar
+          </button>
           <button className="button_delete" onClick={() => deleteQuestion(id)}>
             Eliminar pregunta
           </button>

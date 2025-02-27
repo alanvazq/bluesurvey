@@ -74,7 +74,47 @@ export const updateTitleOrDescription = async (id, title, description, accessTok
     }
 }
 
-// export const updateQuest = async(id, question)
+export const updateQuestionById = async (id, questionId, answers, questionTiTle, typeQuestion, accessToken) => {
+
+    const newAnswer = answers.filter((ans) => ans._id.startsWith("n-"));
+
+    if (newAnswer.length > 0) {
+
+        answers = answers.filter((ans) => !ans._id.startsWith("n-"));
+        const newAnswers = newAnswer.map(({ _id, ...rest }) => rest);
+        answers = [...answers, ...newAnswers];
+        
+    }
+
+    const sanitizedAnswers = answers.map(({ count, ...rest }) => rest);
+
+    console.log("sanitizados", sanitizedAnswers)
+
+    try {
+        const response = await fetch(`${API_URL}/surveys/${id}/questions`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                questionId: questionId,
+                answers: sanitizedAnswers,
+                question: questionTiTle,
+                typeQuestion: typeQuestion
+            })
+        })
+        if (response.ok) {
+            const updatedSurvey = await response.json();
+            return updatedSurvey;
+        } else {
+            console.log("Error al actualizar la pregunta");
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export const deleteQuestionById = async (questionId, surveyId, accessToken) => {
     try {
@@ -88,10 +128,10 @@ export const deleteQuestionById = async (questionId, surveyId, accessToken) => {
         });
 
         if (response.ok) {
-            const surveyUpdated = await response.json();
-            return surveyUpdated;
+            const updatedSurvey = await response.json();
+            return updatedSurvey;
         } else {
-            console.log("Error al actualizar la encuesta")
+            console.log("Error al actualizar la encuesta");
         }
 
     } catch (error) {

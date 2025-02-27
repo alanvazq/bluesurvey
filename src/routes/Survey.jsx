@@ -33,9 +33,11 @@ export const Survey = () => {
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
 
-  const [changeInTitleOrDescription, setChangeInTitleOrDescription] = useState(false);
+  const [changeInTitleOrDescription, setChangeInTitleOrDescription] =
+    useState(false);
 
   const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [changeInQues, setChangeInQues] = useState(null);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -44,18 +46,16 @@ export const Survey = () => {
     }
   };
 
-  useEffect(() => {
-    adjustTextArea(titleRef);
-    adjustTextArea(descriptionRef);
-  }, [title, description]);
-
-  useEffect(() => {
-    getSurvey();
-  }, []);
-
-  const handleEditMode = (id) => {
-    setEditingQuestionId(id);
+  const handleEditMode = (questionId) => {
+    if (changeInQues) return;
+    setEditingQuestionId(questionId);
   };
+
+  const handleEditModeCancel = () => {
+    setEditingQuestionId(null);
+    setChangeInQues(false);
+  };
+
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
@@ -174,6 +174,15 @@ export const Survey = () => {
     }
   }, [title, description]);
 
+  useEffect(() => {
+    adjustTextArea(titleRef);
+    adjustTextArea(descriptionRef);
+  }, [title, description]);
+
+  useEffect(() => {
+    getSurvey();
+  }, []);
+
   return (
     <>
       <Header />
@@ -205,6 +214,8 @@ export const Survey = () => {
               return (
                 <Question
                   key={question._id}
+                  surveyId={id}
+                  accessToken={accessToken}
                   id={question._id}
                   typeQuestion={question.typeQuestion}
                   questionSurvey={question.question}
@@ -212,6 +223,8 @@ export const Survey = () => {
                   deleteQuestion={deleteQuestion}
                   onEdit={handleEditMode}
                   isEditing={editingQuestionId === question._id}
+                  setChangeInQue={setChangeInQues}
+                  cancelEditMode={handleEditModeCancel}
                 />
               );
             })}

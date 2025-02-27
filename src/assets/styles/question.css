@@ -52,13 +52,9 @@
 }
 
 .button_save_question {
-  background-color: var(--blueColor);
   color: var(--whiteColor);
 }
 
-.button_save_question:hover {
-  background-color: var(--blueColorB);
-}
 
 .cancel_question {
   background-color: var(--lightGray);
@@ -173,4 +169,18 @@
   justify-self: end;
   display: flex;
   gap: 1rem;
+}
+
+.no_changes_question {
+  background-color: var(--gray);
+}
+
+.save_changes_question {
+  background-color: var(--blueColor);
+  color: var(--whiteColor);
+}
+
+.save_changes_question:hover {
+  cursor: pointer;
+  background-color: var(--blueColorB);
 }
