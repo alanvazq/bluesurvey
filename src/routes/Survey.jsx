@@ -76,6 +76,13 @@ export const Survey = () => {
     setQuestions([...questions, newQuestion]);
   };
 
+  const handleRefreshSurvey = (newQuestionData, prevQuestionId) => {
+    setQuestions((prevQuestions) => [
+      ...prevQuestions.filter((que) => que._id !== prevQuestionId),
+      newQuestionData,
+    ]);
+  };
+
   const getSurvey = async () => {
     try {
       const survey = await getSurveyData(id, accessToken);
@@ -224,6 +231,7 @@ export const Survey = () => {
                   isEditing={editingQuestionId === question._id}
                   setChangeInQue={setChangeInQues}
                   cancelEditMode={handleEditModeCancel}
+                  handleRefreshSurvey={handleRefreshSurvey}
                 />
               );
             })}

@@ -23,6 +23,7 @@ export const Question = ({
   isEditing,
   setChangeInQue,
   cancelEditMode,
+  handleRefreshSurvey,
 }) => {
   const [titleQuestion, setTitleQuestion] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -53,22 +54,17 @@ export const Question = ({
 
   const updateQuestion = async () => {
     let allAnswers = answersQuestion;
-
     const newAnswer = answersQuestion.filter((ans) => ans._id.startsWith("n-"));
-
     if (newAnswer.length > 0) {
       const notNewQuestions = answers.filter(
         (ans) => !ans._id.startsWith("n-")
       );
-
       const newAnswers = newAnswer.map(({ _id, ...rest }) => rest);
-
       allAnswers = [...notNewQuestions, ...newAnswers];
     }
 
     let sanitizedAnswers = allAnswers.map(({ count, ...rest }) => rest);
     sanitizedAnswers = sanitizedAnswers.filter((ans) => ans.answer !== "");
-    console.log(sanitizedAnswers);
     try {
       const updatedQuestion = await updateQuestionById(
         surveyId,
@@ -110,7 +106,9 @@ export const Question = ({
         setSelectedOption(newQuestion.typeQuestion);
         setTitleQuestion(newQuestion.question);
         setAnswersQuestion(newQuestion.answers);
+        handleRefreshSurvey(newQuestion, id);
         setChangeInQuestion(false);
+        cancelEditMode();
       }
     } catch (error) {
       console.log(error);
@@ -181,11 +179,16 @@ export const Question = ({
   const changesInOption = () => {
     if (id.startsWith("n-")) return false;
 
-    if (answersQuestion.length === 0) return false;
+    if (
+      selectedOption === "singleOption" ||
+      selectedOption === "multipleOption"
+    ) {
+      if (answersQuestion.length === 0) return false;
 
-    if (answersQuestion.length === 1) {
-      const empyAnswer = answersQuestion.some((ans) => ans.answer === "");
-      if (empyAnswer) return false;
+      if (answersQuestion.length === 1) {
+        const empyAnswer = answersQuestion.some((ans) => ans.answer === "");
+        if (empyAnswer) return false;
+      }
     }
 
     return selectedOption !== initialOption;
