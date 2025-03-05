@@ -6,7 +6,10 @@ import boxImage from "../assets/img/box.svg";
 import { Answer } from "./Answer";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
-import { updateQuestionById } from "../services/surveyService";
+import {
+  updateQuestionById,
+  createNewQuestion,
+} from "../services/surveyService";
 
 export const Question = ({
   surveyId,
@@ -39,27 +42,75 @@ export const Question = ({
     { type: "multipleOption", label: "Opción múltiple", icon: boxImage },
   ];
 
+  const createOrUpdateQuestion = () => {
+    const isNewQuestion = id.startsWith("n-");
+    if (isNewQuestion) {
+      createQuestion();
+    } else {
+      updateQuestion();
+    }
+  };
+
   const updateQuestion = async () => {
+    let allAnswers = answersQuestion;
+
+    const newAnswer = answersQuestion.filter((ans) => ans._id.startsWith("n-"));
+
+    if (newAnswer.length > 0) {
+      const notNewQuestions = answers.filter(
+        (ans) => !ans._id.startsWith("n-")
+      );
+
+      const newAnswers = newAnswer.map(({ _id, ...rest }) => rest);
+
+      allAnswers = [...notNewQuestions, ...newAnswers];
+    }
+
+    let sanitizedAnswers = allAnswers.map(({ count, ...rest }) => rest);
+    sanitizedAnswers = sanitizedAnswers.filter((ans) => ans.answer !== "");
+    console.log(sanitizedAnswers);
     try {
-      const updatedSurvey = await updateQuestionById(
+      const updatedQuestion = await updateQuestionById(
         surveyId,
         id,
-        answersQuestion,
+        sanitizedAnswers,
         titleQuestion,
         selectedOption,
         accessToken
       );
 
-      if (updatedSurvey) {
-        const question = updatedSurvey.questions.find(
-          (quest) => quest._id === id
-        );
-        setInitialTitle(_.cloneDeep(question.question));
-        setInitialOption(_.cloneDeep(question.typeQuestion));
-        setIntialAnswers(_.cloneDeep(question.answers));
-        setSelectedOption(question.typeQuestion);
-        setTitleQuestion(question.question);
-        setAnswersQuestion(question.answers);
+      if (updatedQuestion) {
+        setInitialTitle(_.cloneDeep(updatedQuestion.question));
+        setInitialOption(_.cloneDeep(updatedQuestion.typeQuestion));
+        setIntialAnswers(_.cloneDeep(updatedQuestion.answers));
+        setSelectedOption(updatedQuestion.typeQuestion);
+        setTitleQuestion(updatedQuestion.question);
+        setAnswersQuestion(updatedQuestion.answers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createQuestion = async () => {
+    let newAnswers = answersQuestion.filter((ans) => ans.answer !== "");
+    newAnswers = newAnswers.map(({ _id, ...rest }) => rest);
+    try {
+      const newQuestion = await createNewQuestion(
+        surveyId,
+        titleQuestion,
+        newAnswers,
+        selectedOption,
+        accessToken
+      );
+      if (newQuestion) {
+        setInitialTitle(_.cloneDeep(newQuestion.question));
+        setInitialOption(_.cloneDeep(newQuestion.typeQuestion));
+        setIntialAnswers(_.cloneDeep(newQuestion.answers));
+        setSelectedOption(newQuestion.typeQuestion);
+        setTitleQuestion(newQuestion.question);
+        setAnswersQuestion(newQuestion.answers);
+        setChangeInQuestion(false);
       }
     } catch (error) {
       console.log(error);
@@ -116,19 +167,44 @@ export const Question = ({
   };
 
   const changesInTitleQuestion = () => {
+    if (id.startsWith("n-")) {
+      const lastAnswer = answersQuestion.at(-1);
+      if (lastAnswer !== undefined) {
+        if (lastAnswer.answer === "") {
+          return false;
+        }
+      }
+    }
     return titleQuestion !== initialTitle;
   };
 
   const changesInOption = () => {
+    if (id.startsWith("n-")) return false;
+
+    if (answersQuestion.length === 0) return false;
+
+    if (answersQuestion.length === 1) {
+      const empyAnswer = answersQuestion.some((ans) => ans.answer === "");
+      if (empyAnswer) return false;
+    }
+
     return selectedOption !== initialOption;
   };
 
   const changeInAnswrs = () => {
+    if (id.startsWith("n-")) {
+      const anyAnswer = answersQuestion.some((answ) => answ.answer !== "");
+      if (anyAnswer) {
+        return true;
+      }
+    }
     const lastAnswer = answersQuestion.at(-1);
     if (lastAnswer !== undefined) {
       if (lastAnswer.answer === "") {
         return false;
       }
+    } else {
+      return false;
     }
     return !_.isEqual(answersQuestion, initialAnswers);
   };
@@ -227,7 +303,7 @@ export const Question = ({
       {isEditing && (
         <div className="container_savequestion">
           <button
-            onClick={updateQuestion}
+            onClick={changeInQuestion ? createOrUpdateQuestion : null}
             className={`button_save_question ${
               changeInQuestion ? "save_changes_question" : "no_changes_question"
             }`}

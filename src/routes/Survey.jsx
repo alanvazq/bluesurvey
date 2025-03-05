@@ -73,7 +73,6 @@ export const Survey = () => {
       question: "",
       answers: [],
     };
-
     setQuestions([...questions, newQuestion]);
   };
 

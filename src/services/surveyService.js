@@ -74,21 +74,37 @@ export const updateTitleOrDescription = async (id, title, description, accessTok
     }
 }
 
-export const updateQuestionById = async (id, questionId, answers, questionTiTle, typeQuestion, accessToken) => {
+export const createNewQuestion = async (surveyId, questionTitle, answers, typeQuestion, accessToken) => {
+    try {
+        const response = await fetch(`${API_URL}/surveys/${surveyId}/questions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+            },
 
-    const newAnswer = answers.filter((ans) => ans._id.startsWith("n-"));
+            body: JSON.stringify({
+                typeQuestion: typeQuestion,
+                question: questionTitle,
+                answers: answers
+            })
+        })
 
-    if (newAnswer.length > 0) {
 
-        answers = answers.filter((ans) => !ans._id.startsWith("n-"));
-        const newAnswers = newAnswer.map(({ _id, ...rest }) => rest);
-        answers = [...answers, ...newAnswers];
-        
+        if (response.ok) {
+            const question = await response.json();
+            return question;
+        } else {
+            console.log("Error al crear la pregunta")
+        }
+
+
+    } catch (error) {
+        console.log(error);
     }
+}
 
-    const sanitizedAnswers = answers.map(({ count, ...rest }) => rest);
-
-    console.log("sanitizados", sanitizedAnswers)
+export const updateQuestionById = async (id, questionId, answers, questionTiTle, typeQuestion, accessToken) => {
 
     try {
         const response = await fetch(`${API_URL}/surveys/${id}/questions`, {
@@ -99,7 +115,7 @@ export const updateQuestionById = async (id, questionId, answers, questionTiTle,
             },
             body: JSON.stringify({
                 questionId: questionId,
-                answers: sanitizedAnswers,
+                answers: answers,
                 question: questionTiTle,
                 typeQuestion: typeQuestion
             })
