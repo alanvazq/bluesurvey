@@ -139,19 +139,18 @@
 
 .container_edit_survey {
   display: flex;
-  width: 100%;
-  height: 100vh;
-  gap: 10rem;
+  margin-bottom: 2rem;
+  gap: 5rem;
 }
 
 .container_edit {
-  flex: 7;
+  flex: 1;
 }
 
 .container_actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: sticky;
+  height: 100%;
+  top: 3rem;
 }
 
 .no_changes {
@@ -173,4 +172,3 @@
   visibility: hidden;
   transition: opacity 0.2s;
 }
-

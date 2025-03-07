@@ -1,6 +1,6 @@
 import { useAuth } from "../auth/AuthProvider";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const getSurveyData = async (id, accessToken) => {
     try {
@@ -153,4 +153,49 @@ export const deleteQuestionById = async (questionId, surveyId, accessToken) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+export const getPublicSurvey = async (surveyId) => {
+    try {
+        const response = await fetch(`${API_URL}/public/surveys/${surveyId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+
+        if (response.ok) {
+            const survey = await response.json();
+            return survey;
+        } else {
+            console.log("Error al obtener la encuesta")
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const saveAnswersForm = async (answers, surveyId) => {
+    try {
+        const response = await fetch(`${API_URL}/public/surveys`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    answers,
+                    surveyId,
+                }),
+            }
+        );
+        if (response.ok) {
+            const savedAnswers = response.json();
+            return savedAnswers;
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
 }

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import Header from "../layout/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import {
   getSurveyData,
@@ -38,6 +39,10 @@ export const Survey = () => {
 
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [changeInQues, setChangeInQues] = useState(null);
+
+  const [newQuestionAdded, setNewQuestionAdded] = useState(false);
+
+  const lastQuestionCreatedRef = useRef(null);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -74,6 +79,7 @@ export const Survey = () => {
       answers: [],
     };
     setQuestions([...questions, newQuestion]);
+    setNewQuestionAdded(true);
   };
 
   const handleRefreshSurvey = (newQuestionData, prevQuestionId) => {
@@ -189,6 +195,16 @@ export const Survey = () => {
     getSurvey();
   }, []);
 
+  useEffect(() => {
+    if (lastQuestionCreatedRef.current) {
+      lastQuestionCreatedRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      setNewQuestionAdded(false);
+    }
+  }, [newQuestionAdded]);
+
   return (
     <>
       <Header />
@@ -216,7 +232,7 @@ export const Survey = () => {
           </div>
 
           <div className="container_questions">
-            {questions.map((question) => {
+            {questions.map((question, index) => {
               return (
                 <Question
                   key={question._id}
@@ -232,6 +248,11 @@ export const Survey = () => {
                   setChangeInQue={setChangeInQues}
                   cancelEditMode={handleEditModeCancel}
                   handleRefreshSurvey={handleRefreshSurvey}
+                  ref={
+                    index === questions.length - 1
+                      ? lastQuestionCreatedRef
+                      : null
+                  }
                 />
               );
             })}
@@ -263,19 +284,21 @@ export const Survey = () => {
           >
             <img src={buttonDelete} alt="delete" />
           </button>
-          <button className="button_action link_button">
-            <img src={buttoLink} alt="link" />
-          </button>
+          <CopyToClipboard
+            text={`${import.meta.env.VITE_URL_SURVEY}/public/survey/${id}`}
+          >
+            <button
+              className="button_action link_button"
+              onClick={() => toast.success("Link copiado")}
+            >
+              <img src={buttoLink} alt="link" />
+            </button>
+          </CopyToClipboard>
+
           <button className="button_action chart_button">
             <img src={buttonChart} alt="chart" />
           </button>
         </div>
-
-        {/* <CopyToClipboard text={`${import.meta.env.VITE_URL_SURVEY}/public-survey/${id}`}>
-                            <button className='button_share' onClick={() => toast.success('Link copiado')}>
-                                <img src={shareIcon} />
-                            </button>
-                        </CopyToClipboard> */}
       </div>
     </>
   );

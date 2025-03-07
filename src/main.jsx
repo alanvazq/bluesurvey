@@ -44,7 +44,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/public-survey/:id",
+    path: "/public/survey/:id",
     element: <FormSurvey />,
   },
 ]);

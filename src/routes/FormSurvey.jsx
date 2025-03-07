@@ -1,125 +1,123 @@
-import { useState, useEffect } from "react"
-import '../assets/styles/formSurvey.css'
+import { useState, useEffect } from "react";
+import "../assets/styles/formSurvey.css";
 import Wave from "../layout/Wave";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { toast, Toaster } from "react-hot-toast";
-
+import { getPublicSurvey, saveAnswersForm } from "../services/surveyService";
 
 const FormSurvey = () => {
-
   const auth = useAuth();
-  const { id } = useParams()
+  const { id } = useParams();
 
   useEffect(() => {
     getSurvey();
-  }, [])
-  
+  }, []);
 
-  const [showSurvey, setShowSurvey] = useState({})
-  const [inputsValue, setInputsValue] = useState({})
+  const [showSurvey, setShowSurvey] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const [openQuestions, setOpenQuestions] = useState({});
+  const [singleOptionsQuestions, setSingleOptionQuestions] = useState({});
+  const [multipleOptionQuestions, setMultipleOptionQuestions] = useState({});
 
   const getSurvey = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/public-survey/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    try {
+      const survey = await getPublicSurvey(id);
+      if (survey) {
+        setShowSurvey(survey);
       }
-    })
+    } catch (error) {}
+  };
 
-    if (response.ok) {
-      const json = await response.json();
-      setShowSurvey(json)
-    }
-  }
+  const handleInputTextChange = (event, questionId) => {
+    const { value } = event.target;
+    setOpenQuestions((prevInputsValues) => ({
+      ...prevInputsValues,
+      [questionId]: value,
+    }));
+  };
 
-  const handleInputChange = (event, questionIndex) => {
-    const { name, value, type, checked } = event.target;
+  const handleRadioInputChange = (event, questionId) => {
+    const { value } = event.target;
 
-    if (type === "checkbox") {
-      setInputsValue((prevInputsValue) => {
-        const previousValues = prevInputsValue[questionIndex] || [];
-        let updatedValues;
+    setSingleOptionQuestions((prevInputsValues) => ({
+      ...prevInputsValues,
+      [questionId]: value,
+    }));
+  };
 
-        if (checked) {
-          updatedValues = [...previousValues, value];
-        } else {
-          updatedValues = previousValues.filter((v) => v !== value);
-        }
+  const handleCheckboxInputChange = (event, questionId) => {
+    const { value, checked } = event.target;
+    setMultipleOptionQuestions((prevInputsValue) => {
+      const previousValues = prevInputsValue[questionId] || [];
+      let updatedValues;
 
-        return {
-          ...prevInputsValue,
-          [questionIndex]: updatedValues,
-        };
-      });
-    } else {
-      setInputsValue((prevInputsValue) => ({
+      if (checked) {
+        updatedValues = [...previousValues, value];
+      } else {
+        updatedValues = previousValues.filter((v) => v !== value);
+      }
+      return {
         ...prevInputsValue,
-        [questionIndex]: value,
-      }));
-    }
-
-
+        [questionId]: updatedValues,
+      };
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formSubmitted) {
-      return;
-    }
+    if (formSubmitted) return;
 
-    const formattedAnswers = Object.entries(inputsValue).reduce(
-      (acc, [questionIndex, value]) => {
-        const question = showSurvey.questions[questionIndex];
-        const questionType = question.type;
-        const questionLabel = question.question;
+    const open = Object.keys(openQuestions).map((questionId) => {
+      return {
+        questionId,
+        answer: openQuestions[questionId],
+      };
+    });
 
-        if (!acc.answers[questionType]) {
-          acc.answers[questionType] = {};
-        }
-
-        if (Array.isArray(value)) {
-          acc.answers[questionType][questionLabel] = value;
-        } else {
-          acc.answers[questionType][questionLabel] = value;
-        }
-
-        return acc;
-      },
-      { answers: {} }
+    const singleOption = Object.keys(singleOptionsQuestions).map(
+      (questionId) => {
+        return {
+          questionId,
+          answer: singleOptionsQuestions[questionId],
+        };
+      }
     );
 
+    const multipleOption = Object.keys(multipleOptionQuestions).map(
+      (questionId) => {
+        return {
+          questionId,
+          answers: multipleOptionQuestions[questionId],
+        };
+      }
+    );
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/public-survey`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${auth.getAccessToken()}`
-      },
-      body: JSON.stringify({
-        answers: formattedAnswers.answers,
-        surveyId: id
-      })
+    const answers = {
+      open,
+      singleOption,
+      multipleOption,
+    };
 
+    try {
+      const savedAnswers = saveAnswersForm(answers, id);
+      if (savedAnswers) {
+        toast.success("Encuesta enviada, ¡Gracias por responder!", {
+          duration: 3000,
+          icon: "👍",
+        });
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
 
-    })
-    if (response.ok) {
-      toast.success('Encuesta enviada, ¡Gracias por responder!', {
-        duration: 3000,
-        icon: "👍"
-      })
+      setFormSubmitted(true);
+    } catch (error) {
+      console.log(error);
     }
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 3000);
-
-    setFormSubmitted(true);
   };
-
 
   return (
     <>
@@ -127,67 +125,91 @@ const FormSurvey = () => {
       <div className="container_form_public container">
         <form onSubmit={handleSubmit} className="container_form_public_content">
           <div className="header_form_public">
-            <h1>{showSurvey.title} </h1>
+            <p className="title_form">{showSurvey.title} </p>
             <p>{showSurvey.description}</p>
           </div>
           <div className="form_public_content">
-            {showSurvey.questions && showSurvey.questions.map((question, index) => (
-              <div key={index}>
-                <div className='container_question_public'>
-                  <label className="label_form_public">{question.question}</label>
+            {showSurvey.questions &&
+              showSurvey.questions.map((question, index) => (
+                <div key={question._id}>
+                  <div className="container_question_public">
+                    <label className="label_form_public">
+                      {question.question}
+                    </label>
 
-                  {question.type === "abierta" && (
-                    <div className="">
-                      <input
-                        className="input_public"
-                        type="text"
-                        placeholder="Escribe una o varias palabras..."
-                        name={`question_${index}`}
-                        value={inputsValue[index] || ''}
-                        onChange={(event) => handleInputChange(event, index)}
-                      />
-                    </div>
-                  )}
+                    {question.typeQuestion === "open" && (
+                      <div className="">
+                        <input
+                          className="input_public"
+                          type="text"
+                          placeholder="Escribe aquí..."
+                          name={`question_${question._id}`}
+                          value={openQuestions[question._id] || ""}
+                          onChange={(event) =>
+                            handleInputTextChange(event, question._id)
+                          }
+                        />
+                      </div>
+                    )}
 
-                  {question.type === "opción unica" && (
-                    <div>
-                      {question.answers.map((answer, answerIndex) => (
-                        <div key={answerIndex} className="radio_container">
-                          <input
-                            type="radio"
-                            id={`question_${index}_answer_${answerIndex}`}
-                            name={`question_${index}`}
-                            value={answer}
-                            onChange={(event) => handleInputChange(event, index)}
-                          />
-                          <label htmlFor={`question_${index}_answer_${answerIndex}`} className="label_radio">{answer}</label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    {question.typeQuestion === "singleOption" && (
+                      <div>
+                        {question.answers.map((answer, answerIndex) => (
+                          <div key={answer._id} className="radio_container">
+                            <input
+                              type="radio"
+                              id={`question_${question._id}_answer_${answer._id}`}
+                              name={`question_${question._id}`}
+                              value={answer.answer}
+                              onChange={(event) =>
+                                handleRadioInputChange(event, question._id)
+                              }
+                            />
+                            <label
+                              htmlFor={`question_${question._id}_answer_${answer._id}`}
+                              className="label_radio"
+                            >
+                              {answer.answer}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                  {question.type === "opción multiple" && (
-                    <div>
-                      {question.answers.map((answer, answerIndex) => (
-                        <div key={answerIndex}>
-                          <input
-                            type="checkbox"
-                            id={`question_${index}_answer_${answerIndex}`}
-                            name={`question_${index}`}
-                            value={answer}
-                            onChange={(event) => handleInputChange(event, index)}
-                          />
-                          <label htmlFor={`question_${index}_answer_${answerIndex}`} className="label_checkbox">{answer}</label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    {question.typeQuestion === "multipleOption" && (
+                      <div>
+                        {question.answers.map((answer, answerIndex) => (
+                          <div key={answer._id}>
+                            <input
+                              type="checkbox"
+                              id={`question_${question._id}_answer_${answer._id}`}
+                              name={`question_${question._id}`}
+                              value={answer.answer}
+                              onChange={(event) =>
+                                handleCheckboxInputChange(event, question._id)
+                              }
+                            />
+                            <label
+                              htmlFor={`question_${question._id}_answer_${answer._id}`}
+                              className="label_checkbox"
+                            >
+                              {answer.answer}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-            
-            <button className="aceptar button_modal button_public" disabled={formSubmitted}>Enviar</button>
+              ))}
 
+            <button
+              className={`${formSubmitted ? "no_send" : "send_form"}`}
+              disabled={formSubmitted}
+              onClick={formSubmitted ? null : handleSubmit}
+            >
+              Enviar
+            </button>
           </div>
         </form>
       </div>
@@ -197,12 +219,12 @@ const FormSurvey = () => {
         toastOptions={{
           style: {
             fontSize: "1.6rem",
-            backgroundColor: "#fff"
-          }
+            backgroundColor: "#fff",
+          },
         }}
       />
     </>
-  )
-}
+  );
+};
 
 export default FormSurvey;
