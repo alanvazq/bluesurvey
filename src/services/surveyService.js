@@ -2,6 +2,28 @@ import { useAuth } from "../auth/AuthProvider";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+export const getSurveys = async (accessToken) => {
+    try {
+        const response = await fetch(`${API_URL}/surveys`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        if (response.ok) {
+
+            const surveys = await response.json();
+            return surveys;
+        } else {
+            return ("Error en la conexion");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getSurveyData = async (id, accessToken) => {
     try {
         const response = await fetch(
@@ -36,8 +58,9 @@ export const deleteSurveyById = async (id, accessToken) => {
             },
         });
 
-        if (!response.ok) {
-            return await response.json();
+        if (response.ok) {
+            const surveyDeleted = await response.json();
+            return surveyDeleted;
         } else {
             console.log("Error al eliminar la encuesta");
         }
@@ -199,3 +222,4 @@ export const saveAnswersForm = async (answers, surveyId) => {
     }
 
 }
+

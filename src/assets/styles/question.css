@@ -23,11 +23,12 @@
 
 .title_question {
   font-family: var(--font);
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   outline: none;
   resize: none;
   border: none;
   width: 80%;
+  font-weight: bold;
 }
 
 .question_preview {
@@ -50,12 +51,12 @@
   font-size: 1.4rem;
   cursor: pointer;
   transition: all 0.2s ease-out;
+  font-weight: 500;
 }
 
 .button_save_question {
   color: var(--whiteColor);
 }
-
 
 .cancel_question {
   background-color: var(--lightGray);
@@ -77,6 +78,7 @@
   gap: 1rem;
   border-radius: 1.5rem;
   color: var(--blackColor);
+  font-weight: 500;
   margin-bottom: 1rem;
   font-size: 1.4rem;
 }
@@ -84,6 +86,7 @@
 .input_radio:checked + .input_label {
   background-color: var(--ligthBlueColor);
   color: var(--blueColor);
+  font-weight: 700;
 }
 
 .input_label:hover {
@@ -138,6 +141,7 @@
   font-family: var(--font);
   transition: all 0.2s ease-out;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .button_add:hover {
@@ -179,9 +183,10 @@
 .save_changes_question {
   background-color: var(--blueColor);
   color: var(--whiteColor);
+  font-weight: bold;
 }
 
 .save_changes_question:hover {
   cursor: pointer;
-  background-color: var(--blueColorB);
+  background-color: var(--blueColorVariant);
 }

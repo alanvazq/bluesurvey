@@ -18,7 +18,7 @@
 }
 
 .container_details_survey {
-  border: solid 1px var(--lightGray);
+  border: solid 1px var(--gray);
   border-radius: 1.5rem;
   padding: 3rem;
   display: flex;
@@ -83,7 +83,7 @@
 }
 
 .button_create_modal:hover {
-  background-color: var(--blueColorB);
+  background-color: var(--blueColorVariant);
 }
 .button_cancel_modal:hover {
   background-color: var(--gray);

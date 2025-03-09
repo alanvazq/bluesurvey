@@ -4,16 +4,17 @@ import "../assets/styles/dashboard.css";
 import Header from "../layout/Header";
 import SurveyModal from "../components/SurveyModal";
 import createIcon from "../assets/img/createW.svg";
-import { toast } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getSurveys } from "../services/surveyService";
 
 const Dashboard = () => {
   const [stateModal, setStateModal] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const goTo = useNavigate();
-  // const [selectedSurvey, setSelectedSurvey] = useState(null);
 
   const auth = useAuth();
+  const accessToken = auth.getAccessToken();
 
   useEffect(() => {
     toast.loading("Cargando encuestas...");
@@ -22,23 +23,15 @@ const Dashboard = () => {
 
   const loadSurveys = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/surveys`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.getAccessToken()}`,
-        },
-      });
-
-      if (response.ok) {
+      const surveysData = await getSurveys(accessToken);
+      if (surveysData) {
         toast.remove();
-        const surveys = await response.json();
-        setSurveys(surveys);
+        setSurveys(surveysData);
       } else {
         toast.error("Error en la conexion");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Algo salió mal");
     }
   };
 
@@ -52,27 +45,25 @@ const Dashboard = () => {
             onClick={() => setStateModal(!stateModal)}
           >
             <img src={createIcon} className="icon_create" />
+            Nueva encuesta
           </button>
-          Nueva encuesta
         </div>
 
-        <h1
-          className="surveys_created
-"
-        >
-          Encuestas creadas
-        </h1>
+        <h1 className="surveys_created">Encuestas creadas</h1>
 
         <div className="container_surveys">
           {surveys.map((survey) => (
             <div
               className="container_survey"
               key={survey._id}
-              onClick={() => goTo(`/survey/${survey._id}`)}
+              onClick={() => {
+                goTo(`/survey/${survey._id}`);
+              }}
             >
               <div className="icons"></div>
-              <p className="title_survey_dashboard">{survey.title}</p>
-              <p className="date_survey">02/02/2025</p>
+              {survey.title.length > 60
+                ? survey.title.slice(0, 60) + "..."
+                : survey.title}
             </div>
           ))}
         </div>

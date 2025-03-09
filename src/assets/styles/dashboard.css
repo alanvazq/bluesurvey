@@ -5,25 +5,23 @@
   align-items: center;
 }
 
-.icon_create {
-  width: 3rem;
-}
-
 .create_button {
   background-color: var(--blueColor);
-  border: solid 1px var(--blueColor);
+  border: none;
   color: var(--whiteColor);
-  padding: 2rem 3rem;
   border-radius: 1.5rem;
   display: flex;
   transition: all 0.3s ease-out;
   justify-content: center;
-  margin-bottom: 1rem;
+  align-items: center;
+  padding: 1rem 2rem;
+  gap: 1rem;
+  font-weight: bold;
 }
 
 .create_button:hover {
   cursor: pointer;
-  background-color: var(--blueColorB);
+  background-color: var(--blueColorVariant);
 }
 
 .surveys_created {
@@ -42,13 +40,14 @@
 }
 .container_survey {
   flex-basis: calc(25% - 1rem);
+  height: 10rem;
   font-size: 1.6rem;
   position: relative;
   transition: all 0.3s ease-out;
   background-color: var(--whiteColor);
-  border-radius: .5rem;
+  border-radius: 1.5rem;
   padding: 2rem;
-
+  overflow: hidden;
 }
 
 .title_survey_dashboard {
@@ -65,7 +64,6 @@
 }
 
 .container_survey:hover {
-  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
-

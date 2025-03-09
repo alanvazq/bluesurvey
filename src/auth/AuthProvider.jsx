@@ -105,7 +105,6 @@ const AuthProvider = ({ children }) => {
     }
 
     const saveUser = (userData) => {
-        console.log('SaveUser', userData)
         saveSessionInfo(userData.user, userData.accessToken, userData.refreshToken)
     }
 

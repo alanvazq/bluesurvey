@@ -1,112 +1,107 @@
 import { useState } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import { Navigate, useNavigate } from "react-router-dom";
-import '../assets/styles/form.css'
-import Button from "../components/Button";
 import Wave from "../layout/Wave";
-import { Toaster, toast } from 'react-hot-toast';
-
+import { Toaster, toast } from "react-hot-toast";
+import { register } from "../services/authService";
 
 const SignUp = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const auth = useAuth();
+  const goTo = useNavigate();
 
-    const auth = useAuth();
-    const goTo = useNavigate();
+  if (auth.isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (auth.isAuthenticated) {
-        return <Navigate to="/dashboard" />
+    try {
+      const newUser = await register(name, email, password);
+      if (newUser) {
+        goTo("/login");
+      } else {
+        toast.error(messageError);
+      }
+    } catch (error) {
+        toast.error("Algo salió mal")
+      console.log(error);
     }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  return (
+    <>
+      <div className="container-home">
+        <header className="header">
+          <p onClick={() => goTo("/")} className="logo-home">
+            Bluesurvey
+          </p>
+        </header>
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password
-                })
-            });
-
-            if (response.ok) {
-                goTo("/login")
-
-            } else {
-                const errorData = await response.json();
-                const messageError = errorData.body.error;
-                toast.error(messageError)
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const handleClick = () => {
-        goTo('/login')
-    }
-
-    return (
-        <>
-            <Wave />
-            <div className="form-container">
-                <form className="container form" onSubmit={handleSubmit}>
-                    <h2 className="title_signup">Registro</h2>
-                    <label className="label">Nombre</label>
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Nombre"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <label className="label">Correo</label>
-                    <input
-                        className="input"
-                        type="email"
-                        placeholder="correo@gmail.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <label className="label">Contraseña</label>
-                    <input
-                        className="input"
-                        type="password"
-                        placeholder="********"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-
-                    />
-                    <Button
-                        color="green"
-                        text="Registrarse"
-                        style="buttonForm"
-                    />
-                    <p className="text-center">¿Ya tienes cuenta? <span className="span" onClick={handleClick}>Inicia Sesión</span> </p>
-                </form>
+        <main className="content">
+          <form className="form" onSubmit={handleSubmit}>
+            <h2 className="title-form">Crea tu cuenta</h2>
+            <div className="content-inputs-form">
+              <label className="label">Nombre</label>
+              <input
+                className="input-form"
+                type="text"
+                placeholder="Nombre"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
-            <Toaster
-                position="top-center"
-                reverseOrder={false}
-                toastOptions={{
-                    style: {
-                        fontSize: "1.6rem",
-                        backgroundColor: "#fff"
-                    }
-                }}
-            />
-        </>
-    );
-}
+            <div className="content-inputs-form">
+              <label className="label">Correo</label>
+              <input
+                className="input-form"
+                type="email"
+                placeholder="correo@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-export default SignUp; 
+            <div className="content-inputs-form">
+              <label className="label">Contraseña</label>
+              <input
+                className="input-form"
+                type="password"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="buttons-form">
+              <button className="button button-form">Registrarme</button>
+              <button
+                className="button button-form button-signup"
+                onClick={() => goTo("/login")}
+              >
+                Ya tengo cuenta
+              </button>
+            </div>
+          </form>
+        </main>
+      </div>
+
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: "1.6rem",
+            backgroundColor: "#fff",
+          },
+        }}
+      />
+    </>
+  );
+};
+
+export default SignUp;

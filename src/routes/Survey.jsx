@@ -12,6 +12,7 @@ import Header from "../layout/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Toaster, toast } from "react-hot-toast";
 
 import {
   getSurveyData,
@@ -19,7 +20,7 @@ import {
   updateTitleOrDescription,
   deleteQuestionById,
 } from "../services/surveyService";
-
+import { DeleteSurveyModal } from "../components/DeleteSurveyModal";
 export const Survey = () => {
   const { id } = useParams();
   const titleRef = useRef(null);
@@ -43,6 +44,9 @@ export const Survey = () => {
   const [newQuestionAdded, setNewQuestionAdded] = useState(false);
 
   const lastQuestionCreatedRef = useRef(null);
+
+  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [surveyToDelete, setSurveyToDelete] = useState(null);
 
   const adjustTextArea = (ref) => {
     if (ref.current) {
@@ -135,11 +139,24 @@ export const Survey = () => {
     }
   };
 
-  const deleteSurvey = async () => {
+  const openDeleteModal = (surveyId) => {
+    setSurveyToDelete(surveyId);
+    setModalDeleteOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setSurveyToDelete(null);
+    setModalDeleteOpen(false);
+  };
+
+  const handleDeleteSurvey = async () => {
     try {
       const surveyDeleted = await deleteSurveyById(id, accessToken);
       if (surveyDeleted) {
-        console.log("Encuesta eliminada");
+        toast.success("Encuesta eliminada");
+        goTo("/dashboard");
+      } else {
+        toast.error("Error al eliminar la encuesta");
         goTo("/dashboard");
       }
     } catch (error) {
@@ -266,21 +283,32 @@ export const Survey = () => {
           >
             <img className="img_button" src={buttonAdd} alt="add_question" />
           </button>
-          <button
-            className={`button_action ${
-              changeInTitleOrDescription ? "save_button" : "no_changes"
-            } `}
-            onClick={handleSaveChanges}
-          >
-            <img
-              className="img_button"
-              src={changeInTitleOrDescription ? buttonSave : noChanges}
-              alt="save_survey"
-            />
-          </button>
+          <div className="button-save-container">
+            <button
+              className={`button_action ${
+                changeInTitleOrDescription ? "save_button" : "no_changes"
+              } `}
+              onClick={changeInTitleOrDescription ? handleSaveChanges : null}
+            >
+              <img
+                className="img_button"
+                src={changeInTitleOrDescription ? buttonSave : noChanges}
+                alt="save_survey"
+              />
+            </button>
+            {changeInTitleOrDescription && (
+              <span
+                className={`changes-warning ${
+                  changeInTitleOrDescription ? "visible" : "hidden"
+                }`}
+              >
+                Tienes cambios por guardar
+              </span>
+            )}
+          </div>
           <button
             className="button_action delete_button"
-            onClick={deleteSurvey}
+            onClick={() => openDeleteModal(id)}
           >
             <img src={buttonDelete} alt="delete" />
           </button>
@@ -294,12 +322,30 @@ export const Survey = () => {
               <img src={buttoLink} alt="link" />
             </button>
           </CopyToClipboard>
-
-          <button className="button_action chart_button">
+          <button
+            className="button_action chart_button"
+            onClick={() => goTo(`/results/${id}`)}
+          >
             <img src={buttonChart} alt="chart" />
           </button>
         </div>
       </div>
+
+      <DeleteSurveyModal
+        isOpen={modalDeleteOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleDeleteSurvey}
+      />
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: "1.6rem",
+            backgroundColor: "#fff",
+          },
+        }}
+      />
     </>
   );
 };

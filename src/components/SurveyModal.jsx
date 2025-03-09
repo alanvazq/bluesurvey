@@ -41,7 +41,7 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
         changeState(false);
       } else {
         const errorData = await response.json();
-        const messageError = errorData.error;
+        const messageError = errorData.message;
         toast.error(messageError);
       }
     } catch (error) {
@@ -115,7 +115,7 @@ const Survey = ({ state, changeState, survey, updateSurvey }) => {
       )}
 
       <Toaster
-        position="top-center"
+        position="top-right"
         reverseOrder={false}
         toastOptions={{
           style: {

@@ -48,13 +48,44 @@
 }
 .add_button {
   background-color: var(--blueColor);
+  border: solid 1px var(--lightGray);
 }
 
 .delete_button,
 .link_button,
 .chart_button,
 .save_button {
-  background-color: var(--ligthBlueColor);
+  background-color: var(--whiteColor);
+  transition: all 0.3s ease-in-out;
+}
+
+.button-save-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.changes-warning {
+  font-size: 1.4rem;
+  color: var(--whiteColor);
+  font-weight: bold;
+  position: absolute;
+  left: 120%;
+  width: max-content;
+  background-color: var(--blueColor);
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .add_button::after {
