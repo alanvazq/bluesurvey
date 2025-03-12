@@ -7,18 +7,19 @@ import {
   deleteQuestionById,
 } from "../services/surveyService";
 
-import { Question } from "../components/Question";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../layout/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Toaster, toast } from "react-hot-toast";
 
-import { DeleteSurveyModal } from "../components/DeleteSurveyModal";
-import { SurveyHeader } from "../components/SurveyHeader";
-import { SurveyQuestions } from "../components/SurveyQuestions";
-import { SurveyActions } from "../components/SurveyActions";
+import {
+  DeleteSurveyModal,
+  SurveyHeader,
+  SurveyQuestions,
+  SurveyActions,
+} from "../components";
+
 export const Survey = () => {
   const { id } = useParams();
 
