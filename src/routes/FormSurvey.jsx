@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import "../assets/styles/formSurvey.css";
-import Wave from "../layout/Wave";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { toast, Toaster } from "react-hot-toast";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getPublicSurvey, saveAnswersForm } from "../services/surveyService";
 
 const FormSurvey = () => {
   const auth = useAuth();
   const { id } = useParams();
+  const goTo = useNavigate();
 
   useEffect(() => {
     getSurvey();
@@ -121,8 +122,12 @@ const FormSurvey = () => {
 
   return (
     <>
-      <Wave />
       <div className="container_form_public container">
+        <header className="header_form_survey">
+          <p onClick={() => goTo("/")} className="logo-home">
+            Bluesurvey
+          </p>
+        </header>
         <form onSubmit={handleSubmit} className="container_form_public_content">
           <div className="header_form_public">
             <p className="title_form">{showSurvey.title} </p>
