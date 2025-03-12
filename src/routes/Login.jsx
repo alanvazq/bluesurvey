@@ -21,10 +21,10 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const user = login();
+      const user = await login(email, password);
       if (user) {
         if (user.accessToken && user.refreshToken) {
-          auth.saveUser(json);
+          auth.saveUser(user);
           goTo("/dashboard");
         } else {
           const messageError = errorData.error;
@@ -32,7 +32,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      toast.error("Algo salió mal")
+      toast.error("Algo salió mal");
     }
   };
 
