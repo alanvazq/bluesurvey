@@ -69,13 +69,12 @@ export const Question = forwardRef(
         allAnswers = [...notNewQuestions, ...newAnswers];
       }
 
-      let sanitizedAnswers = allAnswers.map(({ count, ...rest }) => rest);
-      sanitizedAnswers = sanitizedAnswers.filter((ans) => ans.answer !== "");
+      allAnswers = allAnswers.filter((ans) => ans.answer !== "");
       try {
         const updatedQuestion = await updateQuestionById(
           surveyId,
           id,
-          sanitizedAnswers,
+          allAnswers,
           titleQuestion,
           selectedOption,
           accessToken
@@ -244,9 +243,7 @@ export const Question = forwardRef(
     }, []);
 
     useEffect(() => {
-      if (selectedOption === "open") {
-        setAnswersQuestion([]);
-      } else if (
+      if (
         (selectedOption === "singleOption" ||
           selectedOption === "multipleOption") &&
         answersQuestion.length === 0
