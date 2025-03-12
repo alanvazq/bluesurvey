@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import "../assets/styles/edit_survey.css";
-import buttonDelete from "../assets/img/delete.svg";
-import buttonAdd from "../assets/img/create.svg";
-import buttoLink from "../assets/img/link.svg";
-import buttonChart from "../assets/img/chart.svg";
-import buttonSave from "../assets/img/save.svg";
-import noChanges from "../assets/img/changes.svg";
+import {
+  getSurveyData,
+  deleteSurveyById,
+  updateTitleOrDescription,
+  deleteQuestionById,
+} from "../services/surveyService";
+
 import { Question } from "../components/Question";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../layout/Header";
@@ -14,29 +15,24 @@ import { useAuth } from "../auth/AuthProvider";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Toaster, toast } from "react-hot-toast";
 
-import {
-  getSurveyData,
-  deleteSurveyById,
-  updateTitleOrDescription,
-  deleteQuestionById,
-} from "../services/surveyService";
 import { DeleteSurveyModal } from "../components/DeleteSurveyModal";
+import { SurveyHeader } from "../components/SurveyHeader";
+import { SurveyQuestions } from "../components/SurveyQuestions";
+import { SurveyActions } from "../components/SurveyActions";
 export const Survey = () => {
   const { id } = useParams();
-  const titleRef = useRef(null);
-  const descriptionRef = useRef(null);
+
   const auth = useAuth();
   const accessToken = auth.getAccessToken();
+
   const goTo = useNavigate();
 
   const [survey, setSurvey] = useState({});
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
 
-  const [changeInTitleOrDescription, setChangeInTitleOrDescription] =
-    useState(false);
+  const [changeInHeaderSurvey, setChageInHeaderSurvey] = useState(false);
 
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [changeInQues, setChangeInQues] = useState(null);
@@ -48,13 +44,6 @@ export const Survey = () => {
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [surveyToDelete, setSurveyToDelete] = useState(null);
 
-  const adjustTextArea = (ref) => {
-    if (ref.current) {
-      ref.current.style.height = "auto";
-      ref.current.style.height = ref.current.scrollHeight + "px";
-    }
-  };
-
   const handleEditMode = (questionId) => {
     if (changeInQues) return;
     setEditingQuestionId(questionId);
@@ -63,14 +52,6 @@ export const Survey = () => {
   const handleEditModeCancel = () => {
     setEditingQuestionId(null);
     setChangeInQues(false);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
   };
 
   const handleAddQuestion = () => {
@@ -130,7 +111,7 @@ export const Survey = () => {
         setSurvey(surveyUpdated);
         setTitle(surveyUpdated.title),
           setDescription(surveyUpdated.description);
-        setChangeInTitleOrDescription(false);
+        setChageInHeaderSurvey(false);
       } else {
         console.log("Errror al actualizar la encuesta");
       }
@@ -164,12 +145,6 @@ export const Survey = () => {
     }
   };
 
-  const handleSaveChanges = () => {
-    if (changeInTitleOrDescription) {
-      updateTitleAndDescription();
-    }
-  };
-
   const removeQuestion = (questionId) => {
     setQuestions((prevQuestions) =>
       prevQuestions.filter((question) => question._id !== questionId)
@@ -197,15 +172,10 @@ export const Survey = () => {
 
   useEffect(() => {
     if (title !== survey.title || description !== survey.description) {
-      setChangeInTitleOrDescription(true);
+      setChageInHeaderSurvey(true);
     } else {
-      setChangeInTitleOrDescription(false);
+      setChageInHeaderSurvey(false);
     }
-  }, [title, description]);
-
-  useEffect(() => {
-    adjustTextArea(titleRef);
-    adjustTextArea(descriptionRef);
   }, [title, description]);
 
   useEffect(() => {
@@ -227,108 +197,33 @@ export const Survey = () => {
       <Header />
       <div className="container container_edit_survey">
         <div className="container_edit">
-          <div className="container_title_description">
-            <textarea
-              className="edit_input_title edit_input"
-              name="title"
-              id="title"
-              value={title}
-              ref={titleRef}
-              onChange={handleTitleChange}
-              placeholder="Título de la encuesta"
-            />
-            <textarea
-              className="edit_input_description edit_input"
-              name="description"
-              id="description"
-              value={description}
-              ref={descriptionRef}
-              onChange={handleDescriptionChange}
-              placeholder="Descripción de la encuesta"
-            />
-          </div>
-
-          <div className="container_questions">
-            {questions.map((question, index) => {
-              return (
-                <Question
-                  key={question._id}
-                  surveyId={id}
-                  accessToken={accessToken}
-                  id={question._id}
-                  typeQuestion={question.typeQuestion}
-                  questionSurvey={question.question}
-                  answers={question.answers}
-                  deleteQuestion={deleteQuestion}
-                  onEdit={handleEditMode}
-                  isEditing={editingQuestionId === question._id}
-                  setChangeInQue={setChangeInQues}
-                  cancelEditMode={handleEditModeCancel}
-                  handleRefreshSurvey={handleRefreshSurvey}
-                  ref={
-                    index === questions.length - 1
-                      ? lastQuestionCreatedRef
-                      : null
-                  }
-                />
-              );
-            })}
-          </div>
+          <SurveyHeader
+            title={title}
+            description={description}
+            onTitleChange={setTitle}
+            onDescriptionChange={setDescription}
+          />
+          <SurveyQuestions
+            accessToken={accessToken}
+            surveyId={id}
+            editingQuestionId={editingQuestionId}
+            lastQuestionCreatedRef={lastQuestionCreatedRef}
+            onDeleteQuestion={deleteQuestion}
+            onEdit={handleEditMode}
+            onEditModeCancel={handleEditModeCancel}
+            onRefreshSurvey={handleRefreshSurvey}
+            setChangeInQues={setChangeInQues}
+            questions={questions}
+          />
         </div>
 
-        <div className="container_actions">
-          <button
-            className="button_action add_button"
-            onClick={handleAddQuestion}
-          >
-            <img className="img_button" src={buttonAdd} alt="add_question" />
-          </button>
-          <div className="button-save-container">
-            <button
-              className={`button_action ${
-                changeInTitleOrDescription ? "save_button" : "no_changes"
-              } `}
-              onClick={changeInTitleOrDescription ? handleSaveChanges : null}
-            >
-              <img
-                className="img_button"
-                src={changeInTitleOrDescription ? buttonSave : noChanges}
-                alt="save_survey"
-              />
-            </button>
-            {changeInTitleOrDescription && (
-              <span
-                className={`changes-warning ${
-                  changeInTitleOrDescription ? "visible" : "hidden"
-                }`}
-              >
-                Tienes cambios por guardar
-              </span>
-            )}
-          </div>
-          <button
-            className="button_action delete_button"
-            onClick={() => openDeleteModal(id)}
-          >
-            <img src={buttonDelete} alt="delete" />
-          </button>
-          <CopyToClipboard
-            text={`${import.meta.env.VITE_URL_SURVEY}/public/survey/${id}`}
-          >
-            <button
-              className="button_action link_button"
-              onClick={() => toast.success("Link copiado")}
-            >
-              <img src={buttoLink} alt="link" />
-            </button>
-          </CopyToClipboard>
-          <button
-            className="button_action chart_button"
-            onClick={() => goTo(`/results/${id}`)}
-          >
-            <img src={buttonChart} alt="chart" />
-          </button>
-        </div>
+        <SurveyActions
+          changeInHeaderSurvey={changeInHeaderSurvey}
+          onAddQuestion={handleAddQuestion}
+          updateTitleAndDescription={updateTitleAndDescription}
+          surveyId={id}
+          openDeleteModal={openDeleteModal}
+        />
       </div>
 
       <DeleteSurveyModal
