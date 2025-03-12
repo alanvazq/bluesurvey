@@ -5,9 +5,11 @@ import Header from "../layout/Header";
 import "../assets/styles/reports.css";
 import { Toaster, toast } from "react-hot-toast";
 import { getSurveyData } from "../services/surveyService";
-import { ResultOpenAnswer } from "../components/ResultOpenAnswer";
-import { ResultSingleOptionAnswer } from "../components/ResultSingleOptionAnswer";
-import { ResultMultipleOption } from "../components/ResultMultipleOption";
+import {
+  ResultOpenAnswer,
+  ResultSingleOptionAnswer,
+  ResultMultipleOption,
+} from "../components";
 
 const Reports = () => {
   const { id } = useParams();

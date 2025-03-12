@@ -1,8 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import "../assets/styles/question.css";
-import textImage from "../assets/img/text.svg";
-import radioImage from "../assets/img/radio.svg";
-import boxImage from "../assets/img/box.svg";
+import { textImage, radioImage, boxImage } from "../assets/img";
 import { Answer } from "./Answer";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";

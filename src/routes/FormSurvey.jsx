@@ -111,7 +111,7 @@ const FormSurvey = () => {
         });
       }
       setTimeout(() => {
-        window.location.reload();
+        goTo("/");
       }, 3000);
 
       setFormSubmitted(true);

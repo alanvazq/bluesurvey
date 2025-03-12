@@ -4,3 +4,6 @@ export { default as buttoLink } from "./link.svg";
 export { default as buttonChart } from "./chart.svg";
 export { default as buttonSave } from "./save.svg";
 export { default as noChanges } from "./changes.svg";
+export { default as textImage } from "./text.svg";
+export { default as radioImage } from "./radio.svg";
+export { default as boxImage } from "./box.svg";
