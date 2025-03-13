@@ -57,3 +57,28 @@ export const register = async (name, email, password) => {
         console.log(error)
     }
 }
+
+export const signout = async (token) => {
+    try {
+        const response = await fetch(`${API_URL}/signout`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        });
+
+        if (response.ok) {
+            const userDisconnected = await response.json();
+            return userDisconnected;
+
+        } else {
+            const errorData = await response.json();
+            return errorData;
+
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}

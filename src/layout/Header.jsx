@@ -4,9 +4,11 @@ import "../assets/styles/header.css";
 import userIcon from "../assets/img/user.svg";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+import { signout } from "../services/authService";
 
 const Header = ({ children }) => {
   const auth = useAuth();
+  const token = auth.getAccessToken();
   const user = useAuth().getUser();
   const goTo = useNavigate();
 
@@ -14,23 +16,22 @@ const Header = ({ children }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/signout`, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${auth.getRefreshToken()}`,
-        },
-      });
-
-      if (response.ok) {
+      const userDisconnected = await signout(token);
+      if (userDisconnected) {
         auth.signOut();
+      } else {
+        console.log("Error al cerrar sesión");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Ocurrio un error");
+    }
   };
   return (
     <>
       <header className="header container">
-        <p className="logo-home-dashboard" onClick={() => goTo("/dashboard")}>Bluesurvey</p>
+        <p className="logo-home-dashboard" onClick={() => goTo("/dashboard")}>
+          Bluesurvey
+        </p>
 
         <nav className="nav">
           <ul className="ul">
