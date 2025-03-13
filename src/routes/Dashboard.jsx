@@ -49,7 +49,11 @@ const Dashboard = () => {
           </button>
         </div>
 
-        <h1 className="surveys_created">Encuestas creadas</h1>
+        <h1 className="surveys_created">
+          {surveys.length === 0
+            ? "No hay encuestas creadas"
+            : "Encuestas creadas"}
+        </h1>
 
         <div className="container_surveys">
           {surveys.map((survey) => (

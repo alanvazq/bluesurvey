@@ -55,8 +55,11 @@ const Reports = () => {
   const totalAnswers = getTotalAnswers();
 
   const renderAnswers = () => {
-    if (!survey.questions || survey.questions.length === 0)
+    console.log(survey.questions);
+
+    if (!survey.questions || survey.questions.length === 0 || totalAnswers === 0) {
       return <p>No hay resultados disponibles.</p>;
+    }
 
     return survey.questions.map((question) => {
       if (question.typeQuestion === "open") {
