@@ -7,3 +7,4 @@ export { default as noChanges } from "./changes.svg";
 export { default as textImage } from "./text.svg";
 export { default as radioImage } from "./radio.svg";
 export { default as boxImage } from "./box.svg";
+export { default as downloadImage } from "./download.svg";

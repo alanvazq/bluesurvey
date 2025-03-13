@@ -40,7 +40,6 @@ export const ResultSingleOptionAnswer = ({ question }) => {
     >
       <p className="question-title">{question.question}</p>
       <p className="total-answers">{totalAnswers} respuestas</p>{" "}
-      {/* Mostrar el total de respuestas */}
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie

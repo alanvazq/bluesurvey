@@ -26,7 +26,7 @@ export const ResultMultipleOption = ({ question }) => {
       key={question._id}
     >
       <p className="question-title">{question.question}</p>
-      <p className="total-answers">{totalVotes} respuestas</p> {/* Mostrar el total de votos */}
+      <p className="total-answers">{totalVotes} respuestas</p> 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
