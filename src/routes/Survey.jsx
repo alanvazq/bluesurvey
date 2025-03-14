@@ -117,8 +117,8 @@ export const Survey = () => {
       const surveyUpdated = await response.json();
       if (response.ok) {
         setSurvey(surveyUpdated);
-        setTitle(surveyUpdated.title),
-          setDescription(surveyUpdated.description);
+        setTitle(surveyUpdated.title);
+        setDescription(surveyUpdated.description);
         setChageInHeaderSurvey(false);
       } else {
         toast.error(surveyUpdated.error || "Error al actualizar");
