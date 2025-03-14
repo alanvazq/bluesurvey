@@ -30,14 +30,15 @@ const Reports = () => {
 
   const getSurvey = async () => {
     try {
-      const surveyData = await getSurveyData(id, accessToken);
-      if (surveyData) {
+      const response = await getSurveyData(id, accessToken);
+      const surveyData = await response.json();
+      if (response.ok) {
         setSurvey(surveyData);
       } else {
-        console.log(error);
+        toast.error(surveyData.error || "Error al obtener las respuestas");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -55,9 +56,12 @@ const Reports = () => {
   const totalAnswers = getTotalAnswers();
 
   const renderAnswers = () => {
-    console.log(survey.questions);
 
-    if (!survey.questions || survey.questions.length === 0 || totalAnswers === 0) {
+    if (
+      !survey.questions ||
+      survey.questions.length === 0 ||
+      totalAnswers === 0
+    ) {
       return <p>No hay resultados disponibles.</p>;
     }
 

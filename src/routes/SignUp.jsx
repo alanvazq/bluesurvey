@@ -19,17 +19,21 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const newUser = await register(name, email, password);
-      if (newUser) {
+      toast.loading("Registrando usuario...");
+      const response = await register(name, email, password);
+      if (response.ok) {
+        toast.remove();
+        toast.success("Usuario registrado");
         goTo("/login");
       } else {
-        toast.error(messageError);
+        toast.remove();
+        const data = await response.json();
+        toast.error(data.error || "Error al registar el usuario");
       }
     } catch (error) {
-        toast.error("Algo salió mal")
-      console.log(error);
+      toast.remove();
+      toast.error(error.message);
     }
   };
 
@@ -78,7 +82,9 @@ const SignUp = () => {
             </div>
 
             <div className="buttons-form">
-              <button className="button button-form">Registrarme</button>
+              <button className="button button-form" onClick={handleSubmit}>
+                Registrarme
+              </button>
               <button
                 className="button button-form button-signup"
                 onClick={() => goTo("/login")}

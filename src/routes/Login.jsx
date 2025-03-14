@@ -21,18 +21,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const user = await login(email, password);
-      if (user) {
-        if (user.accessToken && user.refreshToken) {
-          auth.saveUser(user);
-          goTo("/dashboard");
-        } else {
-          const messageError = errorData.error;
-          toast.error(messageError);
-        }
+      toast.loading("Iniciando sesión...");
+      const response = await login(email, password);
+      const user = await response.json();
+      if (user.accessToken && user.refreshToken) {
+        auth.saveUser(user);
+        goTo("/dashboard");
+      } else {
+        toast.remove();
+        toast.error(user.error);
       }
     } catch (error) {
-      toast.error("Algo salió mal");
+      toast.remove();
+      toast.error(error.message);
     }
   };
 

@@ -23,15 +23,18 @@ const Dashboard = () => {
 
   const loadSurveys = async () => {
     try {
-      const surveysData = await getSurveys(accessToken);
-      if (surveysData) {
+      const response = await getSurveys(accessToken);
+      const data = await response.json();
+      if (response.ok) {
         toast.remove();
-        setSurveys(surveysData);
+        setSurveys(data);
       } else {
-        toast.error("Error en la conexion");
+        toast.remove();
+        toast.error(data.error);
       }
     } catch (error) {
-      toast.error("Algo salió mal");
+      toast.remove();
+      toast.error(error.message);
     }
   };
 

@@ -8,6 +8,7 @@ import {
   updateQuestionById,
   createNewQuestion,
 } from "../services/surveyService";
+import toast from "react-hot-toast";
 
 export const Question = forwardRef(
   (
@@ -69,7 +70,7 @@ export const Question = forwardRef(
 
       allAnswers = allAnswers.filter((ans) => ans.answer !== "");
       try {
-        const updatedQuestion = await updateQuestionById(
+        const response = await updateQuestionById(
           surveyId,
           id,
           allAnswers,
@@ -78,16 +79,22 @@ export const Question = forwardRef(
           accessToken
         );
 
-        if (updatedQuestion) {
+        const updatedQuestion = await response.json();
+
+        if (response.ok) {
           setInitialTitle(_.cloneDeep(updatedQuestion.question));
           setInitialOption(_.cloneDeep(updatedQuestion.typeQuestion));
           setIntialAnswers(_.cloneDeep(updatedQuestion.answers));
           setSelectedOption(updatedQuestion.typeQuestion);
           setTitleQuestion(updatedQuestion.question);
           setAnswersQuestion(updatedQuestion.answers);
+        } else {
+          toast.error(
+            updatedQuestion.error || "Error al actualizar la pregunta"
+          );
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     };
 
@@ -95,14 +102,15 @@ export const Question = forwardRef(
       let newAnswers = answersQuestion.filter((ans) => ans.answer !== "");
       newAnswers = newAnswers.map(({ _id, ...rest }) => rest);
       try {
-        const newQuestion = await createNewQuestion(
+        const response = await createNewQuestion(
           surveyId,
           titleQuestion,
           newAnswers,
           selectedOption,
           accessToken
         );
-        if (newQuestion) {
+        const newQuestion = await response.json();
+        if (response.ok) {
           setInitialTitle(_.cloneDeep(newQuestion.question));
           setInitialOption(_.cloneDeep(newQuestion.typeQuestion));
           setIntialAnswers(_.cloneDeep(newQuestion.answers));
@@ -112,9 +120,11 @@ export const Question = forwardRef(
           handleRefreshSurvey(newQuestion, id);
           setChangeInQuestion(false);
           cancelEditMode();
+        } else {
+          toast.error(newQuestion.error || "Error al crear la pregunta");
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     };
 

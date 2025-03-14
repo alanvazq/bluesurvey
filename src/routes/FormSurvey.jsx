@@ -24,11 +24,16 @@ const FormSurvey = () => {
 
   const getSurvey = async () => {
     try {
-      const survey = await getPublicSurvey(id);
-      if (survey) {
+      const response = await getPublicSurvey(id);
+      const survey = await response.json()
+      if (response.ok) {
         setShowSurvey(survey);
+      } else {
+        toast.error(survey.error || "Error al cargar el formulario");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   const handleInputTextChange = (event, questionId) => {
@@ -103,12 +108,15 @@ const FormSurvey = () => {
     };
 
     try {
-      const savedAnswers = saveAnswersForm(answers, id);
-      if (savedAnswers) {
+      const response = await saveAnswersForm(answers, id);
+      const savedAnswers = await response.json();
+      if (response.ok) {
         toast.success("Encuesta enviada, ¡Gracias por responder!", {
           duration: 3000,
           icon: "👍",
         });
+      } else {
+        toast.error(savedAnswers.error || "Error al enviar las respuestas")
       }
       setTimeout(() => {
         goTo("/");
@@ -116,7 +124,7 @@ const FormSurvey = () => {
 
       setFormSubmitted(true);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message)
     }
   };
 

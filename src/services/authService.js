@@ -7,26 +7,14 @@ export const login = async (email, password) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                email,
-                password
-            })
+            body: JSON.stringify({ email, password })
         });
 
-        if (response.ok) {
-            const user = await response.json();
-            return user;
-
-        } else {
-            const errorData = await response.json();
-            return errorData;
-
-        }
-
+        return response;
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
-}
+};
 
 export const register = async (name, email, password) => {
     try {
@@ -41,20 +29,9 @@ export const register = async (name, email, password) => {
                 password
             })
         });
-
-        if (response.ok) {
-
-            const newUser = response.json();
-            return newUser;
-
-        } else {
-            const errorData = await response.json();
-            const messageError = errorData.body.error;
-            return messageError;
-        }
-
+        return response;
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -68,17 +45,9 @@ export const signout = async (token) => {
             },
         });
 
-        if (response.ok) {
-            const userDisconnected = await response.json();
-            return userDisconnected;
-
-        } else {
-            const errorData = await response.json();
-            return errorData;
-
-        }
+        return response;
 
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
 }

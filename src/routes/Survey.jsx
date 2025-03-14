@@ -77,10 +77,15 @@ export const Survey = () => {
 
   const getSurvey = async () => {
     try {
-      const survey = await getSurveyData(id, accessToken);
-      setSurvey(survey);
-      setTitle(survey.title);
-      setDescription(survey.description);
+      toast.loading("Cargando encuesta...");
+      const response = await getSurveyData(id, accessToken);
+      const survey = await response.json();
+      if (response.ok) {
+        toast.remove();
+        setSurvey(survey);
+        setTitle(survey.title);
+        setDescription(survey.description);
+      }
       if (survey.questions.length === 0) {
         setQuestions([
           {
@@ -96,28 +101,30 @@ export const Survey = () => {
         setQuestions(survey.questions);
       }
     } catch (error) {
-      console.log(error);
+      toast.remove();
+      toast.error(error.message);
     }
   };
 
   const updateTitleAndDescription = async () => {
     try {
-      const surveyUpdated = await updateTitleOrDescription(
+      const response = await updateTitleOrDescription(
         id,
         title,
         description,
         accessToken
       );
-      if (surveyUpdated) {
+      const surveyUpdated = await response.json();
+      if (response.ok) {
         setSurvey(surveyUpdated);
         setTitle(surveyUpdated.title),
           setDescription(surveyUpdated.description);
         setChageInHeaderSurvey(false);
       } else {
-        console.log("Errror al actualizar la encuesta");
+        toast.error(surveyUpdated.error || "Error al actualizar");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -131,18 +138,18 @@ export const Survey = () => {
     setModalDeleteOpen(false);
   };
 
-  const handleDeleteSurvey = async () => {
+  const deleteSurvey = async () => {
     try {
-      const surveyDeleted = await deleteSurveyById(id, accessToken);
-      if (surveyDeleted) {
+      const response = await deleteSurveyById(id, accessToken);
+      const surveyDeleted = await response.json();
+      if (response.ok) {
         toast.success("Encuesta eliminada");
         goTo("/dashboard");
       } else {
-        toast.error("Error al eliminar la encuesta");
-        goTo("/dashboard");
+        toast.error(surveyDeleted.error);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -158,16 +165,15 @@ export const Survey = () => {
       return;
     }
     try {
-      const deletedQuestion = await deleteQuestionById(
-        questionId,
-        id,
-        accessToken
-      );
-      if (deletedQuestion) {
+      const response = await deleteQuestionById(questionId, id, accessToken);
+      const deletedQuestion = await response.json();
+      if (response.ok) {
         removeQuestion(questionId);
+      } else {
+        toast.error(deletedQuestion.error || "Error al eliminar la pregunta");
       }
     } catch (error) {
-      console.log("Error al borrar la pregunta");
+      toast.error(error.message);
     }
   };
 
@@ -230,7 +236,7 @@ export const Survey = () => {
       <DeleteSurveyModal
         isOpen={modalDeleteOpen}
         onClose={closeDeleteModal}
-        onConfirm={handleDeleteSurvey}
+        onConfirm={deleteSurvey}
       />
       <Toaster
         position="top-right"

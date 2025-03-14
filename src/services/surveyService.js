@@ -12,15 +12,10 @@ export const getSurveys = async (accessToken) => {
             },
         });
 
-        if (response.ok) {
+        return response;
 
-            const surveys = await response.json();
-            return surveys;
-        } else {
-            return ("Error en la conexion");
-        }
     } catch (error) {
-        console.log(error);
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -37,14 +32,9 @@ export const getSurveyData = async (id, accessToken) => {
             }
         );
 
-        if (response.ok) {
-            const survey = await response.json();
-            return survey;
-        } else {
-            console.log('Error')
-        }
+        return response;
     } catch (error) {
-        console.log(error);
+        throw new Error("Error en la conexión con el servidor");
     }
 };
 
@@ -58,15 +48,9 @@ export const deleteSurveyById = async (id, accessToken) => {
             },
         });
 
-        if (response.ok) {
-            const surveyDeleted = await response.json();
-            return surveyDeleted;
-        } else {
-            console.log("Error al eliminar la encuesta");
-        }
-
+        return response;
     } catch (error) {
-        console.error("Error:", error);
+        throw new Error("Error en la conexión con el servidor");
     }
 };
 
@@ -85,15 +69,10 @@ export const updateTitleOrDescription = async (id, title, description, accessTok
             }),
         })
 
-        if (response.ok) {
-            const surveyUpdated = await response.json();
-            return surveyUpdated;
-        } else {
-            console.log("Error al actualizar la encuesta")
-        }
+        return response;
 
     } catch (error) {
-        console.log(error);
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -113,17 +92,10 @@ export const createNewQuestion = async (surveyId, questionTitle, answers, typeQu
             })
         })
 
-
-        if (response.ok) {
-            const question = await response.json();
-            return question;
-        } else {
-            console.log("Error al crear la pregunta")
-        }
-
+        return response;
 
     } catch (error) {
-        console.log(error);
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -143,15 +115,11 @@ export const updateQuestionById = async (id, questionId, answers, questionTiTle,
                 typeQuestion: typeQuestion
             })
         })
-        if (response.ok) {
-            const updatedSurvey = await response.json();
-            return updatedSurvey;
-        } else {
-            console.log("Error al actualizar la pregunta");
-        }
+
+        return response;
 
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -166,15 +134,10 @@ export const deleteQuestionById = async (questionId, surveyId, accessToken) => {
 
         });
 
-        if (response.ok) {
-            const updatedSurvey = await response.json();
-            return updatedSurvey;
-        } else {
-            console.log("Error al actualizar la encuesta");
-        }
+        return response;
 
     } catch (error) {
-        console.log(error);
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -186,15 +149,9 @@ export const getPublicSurvey = async (surveyId) => {
                 "Content-Type": "application/json",
             }
         })
-
-        if (response.ok) {
-            const survey = await response.json();
-            return survey;
-        } else {
-            console.log("Error al obtener la encuesta")
-        }
+        return response;
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
 }
 
@@ -212,13 +169,11 @@ export const saveAnswersForm = async (answers, surveyId) => {
                 }),
             }
         );
-        if (response.ok) {
-            const savedAnswers = response.json();
-            return savedAnswers;
-        }
+
+        return response;
 
     } catch (error) {
-        console.log(error)
+        throw new Error("Error en la conexión con el servidor");
     }
 
 }

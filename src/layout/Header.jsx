@@ -5,6 +5,7 @@ import userIcon from "../assets/img/user.svg";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { signout } from "../services/authService";
+import toast from "react-hot-toast";
 
 const Header = ({ children }) => {
   const auth = useAuth();
@@ -16,14 +17,19 @@ const Header = ({ children }) => {
     e.preventDefault();
 
     try {
-      const userDisconnected = await signout(token);
-      if (userDisconnected) {
+      toast.loading("Cerrando sesión...");
+      const response = await signout(token);
+      const data = await response.json()
+      if (response.ok) {
+        toast.remove();
         auth.signOut();
       } else {
-        console.log("Error al cerrar sesión");
+        toast.remove();
+        toast.error(data.error);
       }
     } catch (error) {
-      console.log("Ocurrio un error");
+      toast.remove();
+      toast.error(error.message);
     }
   };
   return (
