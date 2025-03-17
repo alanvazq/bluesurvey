@@ -226,13 +226,7 @@ export const Question = forwardRef(
     };
 
     useEffect(() => {
-      if (changesInTitleQuestion()) {
-        setChangeInQuestion(true);
-        setChangeInQue(true);
-      } else if (changesInOption()) {
-        setChangeInQuestion(true);
-        setChangeInQue(true);
-      } else if (changeInAnswrs()) {
+      if (changesInTitleQuestion() || changesInOption() || changeInAnswrs()) {
         setChangeInQuestion(true);
         setChangeInQue(true);
       } else {
