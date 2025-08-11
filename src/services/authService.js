@@ -38,7 +38,7 @@ export const register = async (name, email, password) => {
 export const signout = async (token) => {
     try {
         const response = await fetch(`${API_URL}/signout`, {
-            method: "POST",
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`

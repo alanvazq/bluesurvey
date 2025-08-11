@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 const Header = ({ children }) => {
   const auth = useAuth();
-  const token = auth.getAccessToken();
+  const refreshToken = auth.getRefreshToken();
   const user = useAuth().getUser();
   const goTo = useNavigate();
 
@@ -18,8 +18,8 @@ const Header = ({ children }) => {
 
     try {
       toast.loading("Cerrando sesión...");
-      const response = await signout(token);
-      const data = await response.json()
+      const response = await signout(refreshToken);
+      const data = await response.json();
       if (response.ok) {
         toast.remove();
         auth.signOut();
